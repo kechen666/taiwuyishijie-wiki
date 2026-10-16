@@ -1,0 +1,47 @@
+# Local credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Dependency environments and caches
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local editor and agent working files
+.vscode/
+.idea/
+.codex/
+.planning/
+.release-check/
+
+# Private Build plans and local exports (keep public example/test JSON files)
+/private/
+/local-builds/
+/build-exports/
+pre-update-user-build.json
+reference-kimi-index.html
+
+# Archives, logs and temporary files
+*.zip
+*.7z
+*.rar
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Track runtime files: assets/icons/, data.js, guide-data.js, export-icons.js,
+# .nojekyll, source metadata, checks and public example JSON files.

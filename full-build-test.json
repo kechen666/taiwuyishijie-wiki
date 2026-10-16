@@ -1,0 +1,111 @@
+{
+  "name": "完整六功法九装备检查",
+  "slots": [
+    {
+      "skill": "Skill_HZG",
+      "evo": "HZG_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    {
+      "skill": "Skill_HRXY",
+      "evo": "HRXY_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    {
+      "skill": "Skill_QPD",
+      "evo": "QPD_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    {
+      "skill": "Skill_XNQCW",
+      "evo": "XNQCW_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    {
+      "skill": "Skill_SNTY",
+      "evo": "SNTY_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    {
+      "skill": "Skill_LTZ",
+      "evo": "LTZ_E1",
+      "picks": [
+        2,
+        3,
+        4
+      ],
+      "levels": {
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    }
+  ],
+  "equips": {
+    "1": "Equip_JFZL",
+    "2": "Equip_BC",
+    "3": "Equip_WHHQ",
+    "4": "Equip_SQL",
+    "5": "Equip_SYYQZ",
+    "6": "Equip_BHZL",
+    "7": "Equip_CWXTJ",
+    "8": "Equip_QFBZ",
+    "9": "Equip_GWMJ"
+  },
+  "equipTiers": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 3,
+    "9": 3
+  }
+}

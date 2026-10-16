@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "name": "角色灵侍示例",
+  "dataDate": "2026-10-16",
+  "slots": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "equips": {},
+  "equipTiers": {},
+  "character": "YunEr",
+  "realm": 5,
+  "characterTraits": {
+    "1": "YunEr_L1_2",
+    "2": "YunEr_L2_1",
+    "3": "YunEr_L3_2"
+  },
+  "companion": "ZiMing7",
+  "notes": "玩法思路：先确定核心功法与升级分支，再搭配装备。\n此方案用于配置规划，实际触发与叠加效果待验证。"
+}

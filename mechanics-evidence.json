@@ -1,0 +1,7 @@
+{
+  "JSLHS_U3L3": {
+    "status": "pending",
+    "note": "描述指向所有弹射功法，但 Buff 的目标选择为 3、无标签字段；与黄竹歌的选择为 2、标签 7 不同，实际范围待验证。",
+    "configurationEvidence": ["SkillUpgrades_SkillUpgrades: JSLHS_U3L3", "Buff_Buff.name=JSLHS_U3L3: SelectionType=3", "Buff_Buff.name=HZG_U3L3: SelectionType=2, SelectionTag=7"]
+  }
+}

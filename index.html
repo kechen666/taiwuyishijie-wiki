@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太吾异世劫 · 功法图鉴与 Build 工坊</title>
+<style>
+:root{
+  --bg:#1c1c1c; --bg2:#232120; --paper:#ece5d3; --muted:#8e8e8e;
+  --line:#333029; --cin:#c05438; --cin-hi:#d4694c; --gold:#c9a05a;
+  --r1:#8e8e8e; --r2:#ece5d3; --r3:#c9a05a; --r4:#c05438;
+  --serif:'Noto Serif SC','Songti SC','SimSun',serif; --sans:'Noto Sans SC',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--paper);font-family:var(--sans);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:var(--cin);color:#fff}
+h1,h2,h3,.serif{font-family:var(--serif)}
+button{font-family:var(--sans);cursor:pointer}
+
+/* ---------- header ---------- */
+.site-head{position:sticky;top:0;z-index:50;background:rgba(28,28,28,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.head-in{max-width:1200px;margin:0 auto;padding:18px 24px 0}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-size:26px;font-weight:900;letter-spacing:2px}
+.brand h1 em{font-style:normal;color:var(--cin-hi)}
+.brand .sub{font-size:12.5px;color:var(--muted);letter-spacing:1px}
+.nav{display:flex;gap:6px;margin-top:14px;overflow-x:auto}
+.nav button{background:none;border:none;color:var(--muted);font-size:14.5px;padding:9px 16px;border-radius:99px;letter-spacing:1px;white-space:nowrap;transition:.2s}
+.nav button:hover{color:var(--paper)}
+.nav button.on{background:var(--cin);color:#fff}
+.nav button .n{font-size:11px;opacity:.75;margin-left:4px}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1200px;margin:0 auto;padding:30px 24px 90px}
+.page{display:none;animation:fadeUp .35s ease}
+.page.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec-title{font-size:21px;font-weight:900;letter-spacing:2px;margin:34px 0 6px;display:flex;align-items:center;gap:10px}
+.sec-title::before{content:'';width:8px;height:22px;background:var(--cin);display:inline-block}
+.sec-note{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+/* ---------- filters ---------- */
+.filters{position:sticky;top:73px;z-index:40;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid var(--line)}
+.f-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.f-label{font-size:12px;color:var(--muted);letter-spacing:2px;margin-right:2px;flex-shrink:0}
+.chip{background:var(--bg2);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:4px 13px;font-size:13px;transition:.15s}
+.chip:hover{color:var(--paper);border-color:#4a453c}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#1c1c1c;font-weight:500}
+.chip.cin.on{background:var(--cin);border-color:var(--cin);color:#fff}
+.search{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:6px 16px;color:var(--paper);font-size:13.5px;outline:none;font-family:var(--sans)}
+.search:focus{border-color:var(--gold)}
+.f-count{font-size:12px;color:var(--muted);margin-left:auto}
+
+/* ---------- skill grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
+.sk-card{background:var(--bg);padding:18px 18px 15px;cursor:pointer;transition:background .18s}
+.sk-card:hover{background:var(--bg2)}
+.sk-card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sk-name{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:1px}
+.sk-card:hover .sk-name{color:var(--cin-hi)}
+.sk-char{font-size:11.5px;color:var(--gold);border:1px solid rgba(201,160,90,.4);border-radius:99px;padding:1px 9px;white-space:nowrap}
+.sk-tags{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 7px;line-height:1.9}
+.tag.st{color:var(--cin-hi);border-color:rgba(192,84,56,.45)}
+.tag.bf{color:var(--gold);border-color:rgba(201,160,90,.4)}
+.sk-desc{font-size:13px;color:#b8b2a2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:44px}
+.sk-stats{display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+.sk-stats b{color:var(--paper);font-weight:500}
+
+/* ---------- equip grid ---------- */
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
+.eq-card{background:var(--bg);padding:16px;cursor:pointer;transition:background .18s}
+.eq-card:hover{background:var(--bg2)}
+.eq-head{display:flex;gap:14px;align-items:flex-start}
+.eq-traits{margin-top:10px;display:flex;flex-direction:column;gap:5px;border-top:1px dashed #2b2823;padding-top:8px}
+.eq-tr{font-size:11.5px;color:#a9a396;line-height:1.6}
+.eq-tr .tn{color:var(--paper);font-weight:500;margin-right:6px}
+.eq-tr .tv{color:var(--gold);font-size:11px}
+.eq-tr .tv i{font-style:normal;color:#6a6a64;margin-right:2px}
+.eq-tr.special{border-left:2px solid var(--cin);padding-left:8px;color:#c9b39a}
+.fx{color:var(--gold);font-weight:600}
+.eq-icon{width:44px;height:44px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;flex-shrink:0;background:var(--bg2)}
+.eq-icon svg{width:26px;height:26px;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.eq-body{min-width:0;flex:1}
+.eq-name{font-family:var(--serif);font-size:16.5px;font-weight:600;letter-spacing:1px}
+.eq-name.r1{color:var(--r1)}.eq-name.r2{color:var(--r2)}.eq-name.r3{color:var(--r3)}.eq-name.r4{color:var(--r4)}
+.eq-meta{display:flex;gap:6px;align-items:center;margin:3px 0 6px;font-size:11.5px;color:var(--muted)}
+.eq-rar{border:1px solid;border-radius:4px;padding:0 6px;line-height:1.8}
+.eq-rar.r1{color:var(--r1);border-color:#4a4a48}.eq-rar.r2{color:var(--r2);border-color:#5a564c}
+.eq-rar.r3{color:var(--r3);border-color:rgba(201,160,90,.5)}.eq-rar.r4{color:var(--cin-hi);border-color:rgba(192,84,56,.5)}
+.eq-fix{font-size:12px;color:#a9a396;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- drawer ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;opacity:0;pointer-events:none;transition:.25s}
+.backdrop.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(620px,100vw);background:#201e1c;border-left:1px solid var(--line);z-index:99;transform:translateX(102%);transition:transform .3s cubic-bezier(.2,.8,.25,1);overflow-y:auto;padding:30px 30px 80px}
+.drawer.on{transform:none}
+.drawer .close{position:sticky;top:0;float:right;background:var(--bg2);border:1px solid var(--line);color:var(--muted);width:34px;height:34px;border-radius:50%;font-size:16px;z-index:2}
+.drawer .close:hover{color:var(--paper);border-color:var(--cin)}
+.d-id{font-size:11.5px;color:var(--muted);letter-spacing:1px;font-family:monospace}
+.d-name{font-size:30px;font-weight:900;letter-spacing:2px;margin:4px 0 8px}
+.d-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.d-desc{background:var(--bg2);border-left:3px solid var(--cin);padding:12px 16px;font-size:14px;color:#d5cfbf;border-radius:0 6px 6px 0}
+.d-sec{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:2px;margin:26px 0 10px;color:var(--gold);display:flex;align-items:center;gap:8px}
+.d-sec small{font-family:var(--sans);font-size:11.5px;color:var(--muted);font-weight:400;letter-spacing:0}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:12.5px;color:var(--muted)}
+.stat b{color:var(--paper);font-size:15px;font-weight:700;margin-left:6px}
+.branch{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.branch-h{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--bg2);cursor:pointer;user-select:none}
+.branch-h .bn{width:22px;height:22px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);font-size:12px;display:grid;place-items:center;flex-shrink:0}
+.branch-h .bt{font-size:14px;font-weight:500}
+.branch-h .arrow{margin-left:auto;color:var(--muted);font-size:12px;transition:.2s}
+.branch.open .arrow{transform:rotate(90deg)}
+.branch-body{display:none;border-top:1px solid var(--line)}
+.branch.open .branch-body{display:block}
+.lv-row{display:flex;gap:12px;padding:10px 14px;border-bottom:1px solid #2b2823;font-size:13px}
+.lv-row:last-child{border-bottom:none}
+.lv-no{color:var(--cin-hi);font-size:11.5px;white-space:nowrap;padding-top:2px;letter-spacing:1px}
+.lv-name{color:var(--paper);font-weight:500;white-space:nowrap;font-size:12.5px;width:86px;flex-shrink:0}
+.lv-tx{color:#b8b2a2;flex:1}
+.lv-id{font-family:monospace;font-size:10.5px;color:#6a6a64;white-space:nowrap;padding-top:3px}
+.evo{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:13px 16px;margin-bottom:10px;background:linear-gradient(90deg,rgba(201,160,90,.05),transparent 60%)}
+.evo.strong{border-left-color:var(--cin)}
+.evo .en{font-family:var(--serif);font-size:16px;font-weight:600}
+.evo .eid{font-family:monospace;font-size:10.5px;color:#6a6a64;margin-left:8px}
+.evo .eb{font-size:11px;color:var(--cin-hi);border:1px solid rgba(192,84,56,.4);border-radius:4px;padding:0 7px;margin-left:8px}
+.evo .et{font-size:13px;color:#b8b2a2;margin-top:6px}
+.d-add{width:100%;margin-top:26px;background:var(--cin);border:none;color:#fff;padding:12px;border-radius:8px;font-size:15px;letter-spacing:3px;transition:.2s}
+.d-add:hover{background:var(--cin-hi)}
+.d-add:disabled{background:var(--bg2);color:var(--muted);cursor:default}
+
+/* ---------- trait rows ---------- */
+.tr{border:1px solid var(--line);border-radius:8px;padding:11px 14px;margin-bottom:8px;background:var(--bg)}
+.tr-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tr-name{font-size:13.5px;font-weight:500}
+.tr-tier{font-size:10.5px;border:1px solid;border-radius:4px;padding:0 6px;line-height:1.8}
+.tr-tier.凡{color:var(--r1);border-color:#4a4a48}.tr-tier.奇{color:var(--r2);border-color:#5a564c}
+.tr-tier.极{color:var(--r3);border-color:rgba(201,160,90,.5)}.tr-tier.绝{color:var(--cin-hi);border-color:rgba(192,84,56,.5)}
+.tr-w{margin-left:auto;font-size:11px;color:#6a6a64}
+.tr-forge{font-size:10.5px;color:var(--gold);border:1px solid rgba(201,160,90,.4);border-radius:4px;padding:0 6px;line-height:1.8}
+.tr-ranges{display:flex;gap:14px;margin-top:6px;font-size:12px;color:#a9a396;flex-wrap:wrap}
+.tr-ranges b{color:var(--paper);font-weight:500;margin-left:4px}
+.tr-ranges .tt{color:#6a6a64}
+.tr-text{font-size:12.5px;color:#b8b2a2;margin-top:6px}
+.tr-kw{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tr-kw span{font-size:10.5px;color:var(--cin-hi);border:1px solid rgba(192,84,56,.35);border-radius:4px;padding:0 6px;line-height:1.8}
+
+/* ---------- builder ---------- */
+.b-layout{display:grid;grid-template-columns:1fr 320px;gap:26px;margin-top:20px;align-items:start}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.slot{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg2);min-height:150px;display:flex;flex-direction:column}
+.slot.empty{border-style:dashed;align-items:center;justify-content:center;cursor:pointer;transition:.2s}
+.slot.empty:hover{border-color:var(--gold);color:var(--gold)}
+.slot.empty .plus{font-size:30px;font-weight:300}
+.slot.empty p{font-size:12.5px;color:var(--muted)}
+.slot .sh{display:flex;justify-content:space-between;align-items:baseline}
+.slot .sn{font-family:var(--serif);font-size:17px;font-weight:600}
+.slot .rm{background:none;border:none;color:var(--muted);font-size:16px;padding:2px 6px}
+.slot .rm:hover{color:var(--cin-hi)}
+.slot .st{font-size:11.5px;color:var(--muted);margin:2px 0 10px}
+.evo-sec{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:12px;background:var(--bg)}
+.evo-sec.none{border-style:dashed;border-color:#4a453c}
+.evo-h{font-size:11.5px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;display:flex;justify-content:space-between}
+.evo-h .st-on{color:var(--gold)}
+.evo-h .st-off{color:var(--cin-hi)}
+.evo-pick{display:flex;gap:6px}
+.evo-pick button{flex:1;background:var(--bg2);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:6px 4px;font-size:12px;transition:.15s;line-height:1.4;cursor:pointer}
+.evo-pick button b{display:block;font-size:12.5px;color:#a9a396;margin-bottom:2px;font-weight:600}
+.evo-pick button small{display:block;font-size:10.5px;color:#6a6a64;line-height:1.45}
+.evo-pick button:hover{border-color:#4a453c;color:var(--paper)}
+.evo-pick button.on{border-color:var(--gold);background:rgba(201,160,90,.12);color:var(--gold)}
+.evo-pick button.on b{color:var(--gold)}
+.evo-desc{margin-top:8px;font-size:11.5px;color:#c9b39a;line-height:1.6;border-left:2px solid var(--gold);padding-left:8px}
+.pick-h{font-size:11.5px;color:var(--muted);letter-spacing:1px;margin-bottom:6px;display:flex;justify-content:space-between}
+.pick-h .cnt{color:var(--gold)}
+.pick-list{display:flex;flex-direction:column;gap:4px}
+.pick-b{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:#a9a396;cursor:pointer;transition:.15s;text-align:left;width:100%}
+.pick-b:hover{border-color:#4a453c;color:var(--paper)}
+.pick-b .ck{width:16px;height:16px;border:1px solid #4a453c;border-radius:4px;flex-shrink:0;display:grid;place-items:center;font-size:11px;color:transparent;transition:.15s}
+.pick-b.on{border-color:var(--cin);color:var(--paper);background:rgba(192,84,56,.07)}
+.pick-b.on .ck{background:var(--cin);border-color:var(--cin);color:#fff}
+.pick-b.dis{opacity:.4;cursor:default}
+.side{position:sticky;top:96px}
+.panel{border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px;background:linear-gradient(160deg,#232120,#1c1c1c)}
+.panel h3{font-size:15px;letter-spacing:2px;margin-bottom:12px;color:var(--gold)}
+.cov-row{display:flex;align-items:center;gap:10px;font-size:12.5px;margin-bottom:7px}
+.cov-row .cl{width:40px;color:var(--muted);flex-shrink:0}
+.cov-bar{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.cov-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cin),var(--gold));border-radius:3px;transition:width .3s}
+.cov-row .cn{width:26px;text-align:right;color:var(--muted)}
+.hint{font-size:12.5px;color:#a9a396;border-left:3px solid var(--gold);padding:6px 12px;margin-bottom:8px;background:rgba(201,160,90,.05)}
+.hint.warn{border-left-color:var(--cin);background:rgba(192,84,56,.06)}
+.save-row{display:flex;gap:8px}
+.save-row input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--paper);font-size:13px;outline:none;font-family:var(--sans)}
+.save-row input:focus{border-color:var(--gold)}
+.btn{background:var(--cin);border:none;color:#fff;border-radius:8px;padding:8px 16px;font-size:13px;letter-spacing:1px;transition:.2s}
+.btn:hover{background:var(--cin-hi)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--muted)}
+.btn.ghost:hover{color:var(--paper);border-color:#4a453c}
+.saved-i{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #2b2823;font-size:13px}
+.saved-i:last-child{border-bottom:none}
+.saved-i .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.saved-i .mini{background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:2px 9px;font-size:11.5px}
+.saved-i .mini:hover{color:var(--gold);border-color:var(--gold)}
+.saved-i .mini.del:hover{color:var(--cin-hi);border-color:var(--cin)}
+
+/* ---------- picker modal ---------- */
+.picker{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(0,0,0,.6)}
+.picker.on{display:grid}
+.picker-box{width:min(760px,94vw);max-height:84vh;background:#201e1c;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden}
+.picker-h{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.picker-h input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:7px 16px;color:var(--paper);font-size:13.5px;outline:none;font-family:var(--sans)}
+.picker-h .x{background:none;border:none;color:var(--muted);font-size:20px;padding:0 6px}
+.picker-list{overflow-y:auto;padding:10px}
+.pick-g{font-size:12px;color:var(--gold);letter-spacing:2px;padding:10px 10px 4px}
+.pick-i{display:flex;align-items:baseline;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.pick-i:hover{background:var(--bg2)}
+.pick-i .nm{font-family:var(--serif);font-size:15px;min-width:100px}
+.pick-i .tg{font-size:11px;color:var(--muted)}
+.pick-i .ds{font-size:11.5px;color:#6a6a64;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.pick-i.eq{flex-direction:column;align-items:stretch;gap:5px}
+.pick-i.eq .pi-h{display:flex;align-items:baseline;gap:10px}
+.pick-i.eq .nm{min-width:0}
+.pick-i.eq .pi-trs{display:flex;flex-direction:column;gap:2px}
+
+/* ---------- builder: 槽位详情/装备 ---------- */
+.slot .sd{font-size:12px;color:#a9a396;margin:0 0 10px;line-height:1.6;border-left:2px solid var(--line);padding-left:10px}
+.b-lv{display:none;flex-direction:column;gap:3px;padding:6px 10px 8px 34px;font-size:11.5px;color:#8e8e8e}
+.b-lv.on{display:flex}
+.b-lv div{line-height:1.55}
+.b-lv .ln{color:var(--cin-hi);margin-right:6px;font-size:10.5px}
+.pick-b .caret{margin-left:auto;color:var(--muted);font-size:11px;transition:.2s;flex-shrink:0}
+.pick-b.exp .caret{transform:rotate(90deg)}
+.eq-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:14px}
+.eq-slot{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg2);min-height:92px}
+.eq-slot.filled{cursor:default}
+.eq-slot.empty{border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:.15s}
+.eq-slot.empty:hover{border-color:var(--gold);color:var(--gold)}
+.eq-slot .esh{display:flex;align-items:center;gap:8px}
+.eq-slot .eslot{font-size:10.5px;color:#6a6a64;letter-spacing:1px}
+.eq-slot .esn{font-size:13.5px;font-weight:500}
+.eq-slot .esx{margin-left:auto;background:none;border:none;color:var(--muted);font-size:14px;padding:0 2px}
+.eq-slot .esx:hover{color:var(--cin-hi)}
+.eq-slot .est{font-size:11px;color:#a9a396;margin-top:5px;line-height:1.55}
+
+/* ---------- keywords ---------- */
+.kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.kw{background:var(--bg);padding:14px 18px}
+.kw .kn{font-size:14.5px;font-weight:700;color:var(--gold)}
+.kw.hai .kn{color:var(--cin-hi)}
+.kw.yi .kn{color:#a9835e}
+.kw .kd{font-size:12.5px;color:#a9a396;margin-top:3px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:#1c1c1c;padding:10px 24px;border-radius:99px;font-size:13.5px;z-index:200;transition:.3s;opacity:0}
+.toast.on{transform:translateX(-50%);opacity:1}
+footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center;color:#6a6a64;font-size:12px;line-height:2}
+
+/* ---------- local game icons ---------- */
+.asset-icon{display:inline-grid;place-items:center;width:44px;height:44px;flex-shrink:0;vertical-align:middle;background:var(--bg2);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.asset-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.asset-icon.equipment img{padding:3px}
+.asset-icon.sm{width:30px;height:30px;border-radius:5px}
+.asset-icon.xs{width:24px;height:24px;border-radius:4px}
+.asset-icon.hero{width:76px;height:76px;border-radius:12px}
+.icon-fallback{display:none;width:100%;height:100%;place-items:center;color:var(--muted)}
+.icon-missing .icon-fallback{display:grid}
+.icon-fallback svg{width:26px;height:26px;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.name-with-icon{display:flex;align-items:center;gap:10px;min-width:0}
+.sk-card .top,.slot .sh,.pick-i,.pick-i.eq .pi-h{align-items:center}
+.drawer-title{display:flex;align-items:center;gap:16px;margin:12px 0 18px}
+.drawer-title>div{min-width:0}
+.drawer-title .d-name{margin:0;overflow-wrap:anywhere}
+.evo-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.evo-title .eid,.evo-title .eb{margin-left:0}
+.evo-pick .asset-icon{display:grid;margin:0 auto 7px}
+.eq-slot .esn{min-width:0}
+.equip-tier{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11.5px;margin:10px 0 6px}
+.equip-tier select{font:inherit;color:var(--paper);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
+.equip-tier label{display:flex;align-items:center;gap:8px}
+.equip-tier button{font:inherit;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:3px 8px;cursor:pointer}
+.equip-tier button:hover{color:var(--gold);border-color:var(--gold)}
+.equipped-traits{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.equipment-summary{margin-top:18px}
+.equipment-summary h3{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.equipment-summary h3 small{font:12px var(--sans);color:var(--muted);letter-spacing:0}
+.summary-note,.summary-empty{font-size:12px;color:var(--muted);margin-bottom:10px}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.summary-stat{border:1px solid var(--line);border-radius:7px;background:var(--bg);padding:9px 12px}
+.summary-stat summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px}
+.summary-stat summary b{color:var(--gold);font-size:13px;white-space:nowrap}
+.summary-source{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.7}
+.summary-special{margin-top:12px;font-size:12px}
+.summary-special>summary{cursor:pointer;color:var(--gold)}
+.summary-effect{border-left:2px solid var(--cin);padding:5px 10px;margin-top:8px;background:var(--bg)}
+.summary-effect .source{font-size:11px;color:var(--muted);margin-top:3px}
+
+@media(max-width:960px){
+  .b-layout{grid-template-columns:1fr}
+  .side{position:static}
+  .filters{position:static}
+  .drawer{width:100vw;border-left:none}
+  .brand h1{font-size:21px}
+}
+@media(max-width:600px){
+  .drawer-title .d-name{font-size:24px}
+  .lv-row{flex-wrap:wrap;gap:8px}
+  .lv-name{width:auto}
+  .lv-tx{flex-basis:100%;order:2}
+  .lv-id{margin-left:auto}
+  .pick-i:not(.eq){flex-wrap:wrap}
+  .pick-i .ds{flex-basis:100%;padding-left:40px}
+}
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="head-in">
+    <div class="brand">
+      <h1>太吾异世劫 <em>图鉴</em></h1>
+      <span class="sub">功法、装备、角色特质、灵侍与局内道具 · 数据整理自本地游戏文件</span>
+    </div>
+    <nav class="nav">
+      <button data-page="codex" class="on">功法宝库<span class="n" id="navCount"></span></button>
+      <button data-page="equip">装备图鉴<span class="n" id="eqCount"></span></button>
+      <button data-page="characters">角色特质</button>
+      <button data-page="companions">灵侍图鉴</button>
+      <button data-page="items">局内道具</button>
+      <button data-page="builder">Build 工坊</button>
+      <button data-page="keywords">关键词典</button>
+    </nav>
+  </div>
+</header>
+
+<link rel="stylesheet" href="wiki-tools.css">
+<link rel="stylesheet" href="guide.css">
+<main class="wrap">
+  <details class="data-banner" id="dataBanner"></details>
+  <section class="page on" id="page-codex">
+    <div class="filters">
+      <div class="f-row">
+        <span class="f-label">角色</span>
+        <span id="charChips"></span>
+        <input class="search" id="searchBox" placeholder="搜索功法名 / 词条 / 效果关键词…">
+      </div>
+      <div class="f-row">
+        <span class="f-label">类型</span>
+        <span id="tagChips"></span>
+        <span class="f-count" id="countTxt"></span>
+      </div>
+    </div>
+    <div class="grid" id="skillGrid"></div>
+  </section>
+
+  <section class="page" id="page-equip">
+    <div class="filters">
+      <div class="f-row">
+        <span class="f-label">部位</span>
+        <span id="slotChips"></span>
+        <input class="search" id="eqSearch" placeholder="搜索装备名 / 词条 / 效果关键词…">
+      </div>
+      <div class="f-row">
+        <span class="f-label">品级</span>
+        <span id="rarChips"></span>
+        <span class="f-count" id="eqCountTxt"></span>
+      </div>
+    </div>
+    <div class="eq-grid" id="eqGrid"></div>
+  </section>
+
+  <section class="page" id="page-characters">
+    <h2 class="sec-title">角色特质</h2>
+    <p class="sec-note">6 位角色的基础特质与境界1～5条目，共90个特质。点击角色查看各境界效果，也可直接加入Build。</p>
+    <div class="filters"><div class="f-row"><input class="search" id="heroSearch" aria-label="搜索角色特质" placeholder="搜索角色、特质名称或效果…"><span class="f-count" id="heroCount"></span></div></div>
+    <div class="guide-grid" id="heroGrid"></div>
+  </section>
+  <section class="page" id="page-companions">
+    <h2 class="sec-title">灵侍图鉴</h2>
+    <p class="sec-note">6 类成长灵侍与单阶段狐灵，共43条普通阶段记录。特殊召唤另列；复用配置不作为独立专属头像或已验证机制。</p>
+    <div class="filters"><div class="f-row"><span id="companionKinds"></span><input class="search" id="companionSearch" aria-label="搜索灵侍" placeholder="搜索灵侍、被动、功法或灵诀…"><span class="f-count" id="companionCount"></span></div></div>
+    <div class="guide-grid" id="companionGrid"></div>
+  </section>
+  <section class="page" id="page-items">
+    <h2 class="sec-title">局内道具</h2>
+    <p class="sec-note">主动道具、丹药与基础拾取物。效果来自配置描述，掉落池权重与具体模式中的可获得性分别标记。</p>
+    <button class="btn ghost guide-tool-link" onclick="GuideUI.showTreasureEquipment()">查看宝物栏装备</button>
+    <div class="filters"><div class="f-row"><span id="itemKinds"></span></div><div class="f-row"><input class="search" id="itemSearch" aria-label="搜索局内道具" placeholder="搜索道具名、丹药或效果…"><span class="f-count" id="itemCount"></span></div></div>
+    <div class="guide-grid" id="itemGrid"></div>
+  </section>
+
+  <section class="page" id="page-builder">
+    <h2 class="sec-title">Build 工坊</h2>
+    <p class="sec-note">最多装配 6 门功法，每门预选最多 3 条升级分支。分支等级用于规划；未读取游戏进度。新选分支默认 Lv3，可改为当前等级。</p>
+    <section class="panel build-notes" aria-labelledby="buildNotesTitle">
+      <h3 id="buildNotesTitle"><label for="buildNotes">攻略备注</label></h3>
+      <textarea id="buildNotes" rows="4" maxlength="4000" aria-describedby="buildNotesHelp" placeholder="写下玩法思路、成型顺序、操作要点或适用场景…" oninput="currentBuild.notes=this.value"></textarea>
+      <p class="summary-note" id="buildNotesHelp">最多4000字，随方案保存和 JSON 导入导出；分享图片中显示在最上方。</p>
+    </section>
+    <div class="b-layout">
+      <div>
+        <section class="panel" aria-labelledby="buildIdentityTitle">
+          <h3 id="buildIdentityTitle">角色与灵侍</h3>
+          <div class="identity-grid" id="buildIdentity"></div>
+          <div class="selected-traits" id="selectedCharacterTraits" aria-live="polite"></div>
+          <details class="build-talent-panel" id="buildTalentPanel"><summary><span>境界特质选择<small id="talentSelectedCount"></small></span></summary><div id="buildTalentChoices"></div></details>
+          <p class="summary-note">按配置规划；每境界最多1项的选择规则待游戏验证。角色与灵侍效果分别展示，未并入装备固定词条合计。</p>
+        </section>
+        <div class="slots" id="slots"></div>
+        <details class="panel synergy-panel" id="synergyPanel">
+          <summary class="synergy-heading"><span><strong>可能的功法联动</strong><small id="synergyCount"></small></span><span class="expand-label">展开查看</span></summary>
+          <p class="summary-note">随功法、进化、分支等级变化。按描述匹配可能受益对象，条件、叠加及进化后的类型仍需实测。</p>
+          <div id="synergySummary" aria-live="polite"></div>
+        </details>
+        <h2 class="sec-title" style="font-size:17px">装备配置</h2>
+        <p class="sec-note">9 个部位各装配 1 件装备。选择品阶后显示固定词条，并实时汇总属性范围；点击装备查看详情。</p>
+        <div class="eq-slots" id="eqSlots"></div>
+        <section class="panel equipment-summary" aria-labelledby="equipmentSummaryTitle">
+          <h3 id="equipmentSummaryTitle">固定词条汇总 <small id="equippedCount"></small></h3>
+          <p class="summary-note">按当前品阶合计固定属性的上下限；随机词条、角色和功法加成另计。点击属性可查看来源。</p>
+          <div id="equipmentSummary" aria-live="polite"></div>
+        </section>
+      </div>
+      <aside class="side">
+        <div class="panel">
+          <h3>流派分析</h3>
+          <div id="analysis"></div>
+        </div>
+        <div class="panel">
+          <h3>保存方案</h3>
+          <div class="save-row">
+            <input id="buildName" placeholder="给这套 Build 起个名…" maxlength="24">
+            <button class="btn" onclick="saveBuild()">保存</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn ghost" style="flex:1" onclick="exportBuild()">导出 JSON</button>
+            <button class="btn ghost" style="flex:1" onclick="document.getElementById('importFile').click()">导入</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBuild(event)">
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:8px" onclick="exportImage()">导出方案图片 PNG</button>
+          <p class="png-note">攻略备注、角色特质与随行灵侍、功法分支、装备固定词条及效果。JSON 可继续编辑。</p>
+        </div>
+        <div class="panel">
+          <h3>我的方案</h3>
+          <div id="savedList"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page" id="page-keywords">
+    <h2 class="sec-title">关键词典</h2>
+    <p class="sec-note">游戏内关键词解释，整理自本地文本。妨害（红）、异常（褐）、增益（金）为三大状态体系。</p>
+    <div class="filters keyword-filters"><div class="f-row"><span class="f-label">分类</span><span id="keywordChips"></span><span class="f-count" id="keywordCount"></span></div><div class="reverse-controls">
+      <input class="search" id="reverseSearch" aria-label="词条反向检索" placeholder="搜索弹射次数、冷却、神火…">
+      <label>验证状态 <select id="reverseStatus"><option value="">全部</option><option value="config">配置描述</option><option value="tested">已实测机制</option><option value="pending">待验证</option></select></label>
+      <button class="btn ghost" onclick="resetReverse()">清除筛选</button>
+    </div>
+    </div><div id="kwSections"></div>
+    <div id="reverseResults" aria-live="polite"></div>
+  </section>
+</main>
+
+<div class="backdrop" id="backdrop" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="图鉴详情" aria-modal="true" aria-hidden="true" inert></aside>
+
+<div class="picker" id="picker">
+  <div class="picker-box">
+    <div class="picker-h">
+      <input id="pickSearch" placeholder="搜索功法…">
+      <button class="x" onclick="closePicker()">×</button>
+    </div>
+    <div class="compare-preview" id="comparePreview"></div>
+    <div class="picker-list" id="pickList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  太吾异世劫 · 非官方玩家工具 ｜ 数据整理自 Steam 本地安装配置快照<br>
+  说明中的动态数值由游戏运行时计算，基础配置不等于实战伤害。图标与文本来自本地资源；复用头像和候选图标另作标记。
+</footer>
+
+<script src="data.js"></script>
+<script src="guide-data.js"></script>
+<script src="build-stats.js"></script>
+<script src="wiki-tools.js"></script>
+<script src="guide-build.js"></script>
+<script src="build-image.js"></script>
+<script src="wiki-ui.js"></script>
+<script src="guide-ui.js"></script>
+<script>
+/* ================= 数据预处理 ================= */
+const D = TAIWU_DATA;
+const SKILLS = D.skills;
+const byId = {}; SKILLS.forEach(s => byId[s.id] = s);
+const TRAITS = D.traits;
+const CHARS = []; SKILLS.forEach(s => { if(!CHARS.includes(s.char)) CHARS.push(s.char); });
+const TAGS = D.types.map(t => t.cn);
+const STATUS_TAGS = ['失神','神火','中毒','外伤','破绽'];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+function statusHTML(id){const s=WikiTools.status(D,id);return `<span class="status-badge ${s.status}" title="${esc(s.note)}">${D.metadata.statuses[s.status]}</span>`;}
+function dataNote(id){const s=WikiTools.status(D,id);return `<p class="summary-note">${statusHTML(id)} · 数据 ${D.metadata.snapshotDate}<br>${esc(s.note)}</p>`;}
+function iconHTML(item, className = '', fallback = '◇'){
+  const src = item && item.icon;
+  const attr = s => esc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return `<span class="asset-icon ${className}${src ? '' : ' icon-missing'}" aria-hidden="true">${src ? `<img src="${attr(src)}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('icon-missing');this.remove()">` : ''}<span class="icon-fallback">${fallback}</span></span>`;
+}
+
+function branchName(sk, b){
+  const u = sk.upgrades.find(u => u.branch === b);
+  return u ? u.name.replace(/\s*等级\s*1\s*$/, '') : ('分支' + b);
+}
+function tagClass(t){
+  if(STATUS_TAGS.includes(t)) return 'tag st';
+  if(t === '增益') return 'tag bf';
+  return 'tag';
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('on'), 1800);
+}
+
+/* ================= 页面切换 ================= */
+const PAGES = ['codex','equip','characters','companions','items','builder','keywords'];
+function activatePage(name){
+  if(!PAGES.includes(name)) name = 'codex';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + name));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.page === name));
+  if(location.protocol !== 'about:' && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.nav button').forEach(b => b.onclick = () => activatePage(b.dataset.page));
+window.addEventListener('hashchange', () => activatePage(location.hash.slice(1)));
+
+/* ================= 图鉴：筛选 + 卡片 ================= */
+const fState = { char: null, tags: new Set(), q: '' };
+
+function buildFilters(){
+  const cc = document.getElementById('charChips');
+  const mk = (label, val) => {
+    const b = document.createElement('button');
+    b.className = 'chip cin'; b.textContent = label;
+    if(val) b.dataset.char = val;
+    b.onclick = () => { fState.char = fState.char === val ? null : val; refreshChipRow(); renderGrid(); };
+    cc.appendChild(b);
+  };
+  mk('全部', null);
+  CHARS.forEach(c => mk(c, c));
+  const tc = document.getElementById('tagChips');
+  TAGS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = t;
+    b.onclick = () => { fState.tags.has(t) ? fState.tags.delete(t) : fState.tags.add(t); b.classList.toggle('on'); renderGrid(); };
+    tc.appendChild(b);
+  });
+  document.getElementById('searchBox').addEventListener('input', e => { fState.q = e.target.value.trim(); renderGrid(); });
+}
+function refreshChipRow(){
+  document.querySelectorAll('#charChips .chip').forEach(b => {
+    b.classList.toggle('on', b.dataset.char ? b.dataset.char === fState.char : !fState.char);
+  });
+}
+function skillText(sk){
+  return sk.name + sk.id + sk.desc +
+    sk.upgrades.map(u => u.name + u.desc).join('') +
+    sk.evos.map(e => e.name + e.effect).join('');
+}
+function skillMatches(sk){
+  if(fState.char && sk.char !== fState.char) return false;
+  for(const t of fState.tags) if(!sk.tags.includes(t)) return false;
+  if(fState.q && !skillText(sk).toLowerCase().includes(fState.q.toLowerCase())) return false;
+  return true;
+}
+function statMini(sk){
+  const b = sk.base, out = [];
+  if(b.伤害 != null) out.push(`伤害 <b>${b.伤害}</b>`);
+  if(b.冷却 != null) out.push(`冷却 <b>${b.冷却}s</b>`);
+  if(b.数量 != null && b.数量 > 1) out.push(`数量 <b>${b.数量}</b>`);
+  return out.map(x => `<span>${x}</span>`).join('');
+}
+function renderGrid(){
+  const list = SKILLS.filter(skillMatches);
+  document.getElementById('countTxt').textContent = `${list.length} / ${SKILLS.length} 门`;
+  document.getElementById('navCount').textContent = SKILLS.length;
+  document.getElementById('skillGrid').innerHTML = list.map(sk => `
+    <div class="sk-card" onclick="openSkill('${sk.id}')">
+      <div class="top"><span class="name-with-icon">${iconHTML(sk)}<span class="sk-name">${esc(sk.name)}</span></span><span class="sk-char">${esc(sk.char)}</span></div>
+      <div class="sk-tags">${sk.tags.map(t => `<span class="${tagClass(t)}">${t}</span>`).join('')}</div>
+      <div class="sk-desc">${esc(sk.desc)}</div>
+      <div class="sk-stats">${statMini(sk)}</div>
+    </div>`).join('') || '<div style="padding:40px;color:var(--muted)">没有匹配的功法</div>';
+}
+
+/* ================= 抽屉（共用） ================= */
+function showDrawer(html){
+  document.getElementById('drawer').inert = false;
+  document.getElementById('drawer').setAttribute('aria-hidden','false');
+  document.getElementById('drawer').innerHTML = `<button class="close" aria-label="关闭详情" onclick="closeDrawer()">×</button>` + html;
+  document.getElementById('drawer').classList.add('on');
+  document.getElementById('backdrop').classList.add('on');
+  document.getElementById('drawer').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer(){
+  if(document.getElementById('drawer').contains(document.activeElement))document.activeElement.blur();
+  document.getElementById('drawer').inert = true;
+  document.getElementById('drawer').setAttribute('aria-hidden','true');
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('backdrop').classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeDrawer(); closePicker(); } });
+
+/* ================= 功法详情 ================= */
+function openSkill(id){
+  const sk = byId[id];
+  const b = sk.base;
+  const statMap = [['伤害',''],['冷却',' s'],['数量',''],['持续时间',' s'],['弹射',''],['穿透','']];
+  const stats = statMap.filter(([k]) => b[k] != null && (b[k] > 0 || ['伤害','冷却','数量'].includes(k)))
+    .map(([k, u]) => `<span class="stat">${k}<b>${b[k]}${u}</b></span>`).join('');
+  const branches = [1,2,3,4,5].map(bn => {
+    const rows = sk.upgrades.filter(u => u.branch === bn);
+    return `<div class="branch">
+      <div class="branch-h" onclick="this.parentElement.classList.toggle('open')">
+        <span class="bn">${bn}</span>${iconHTML(rows[0], 'sm')}<span class="bt">${esc(branchName(sk, bn))}</span><span class="arrow">▶</span>
+      </div>
+      <div class="branch-body">${rows.map(u => `
+        <div class="lv-row">
+          ${iconHTML(u, 'xs')}
+          <span class="lv-no">LV${u.level}</span>
+          <span class="lv-name">${esc(u.name.replace(/\s*等级\s*\d\s*$/, ''))}</span>
+          <span class="lv-tx">${esc(u.desc)} ${D.metadata.verification[u.id]?statusHTML(u.id):''}</span>
+          <span class="lv-id">${u.id}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  const evos = sk.evos.map((e, i) => `
+    <div class="evo ${i === 2 ? 'strong' : ''}">
+      <div class="evo-title">${iconHTML(e)}<span class="en">${esc(e.name)}</span><span class="eid">${e.id}</span>${i === 2 ? '<span class="eb">数值强化</span>' : ''}</div>
+      <div class="et">${esc(e.effect)}</div>
+    </div>`).join('');
+  const inBuild = currentBuild.slots.some(s => s && s.skill === id);
+  showDrawer(`
+    <div class="drawer-title">${iconHTML(sk, 'hero')}<div><div class="d-id">${sk.id}</div><div class="d-name">${esc(sk.name)}</div></div></div>
+    <div class="d-meta">
+      <span class="sk-char">${esc(sk.char)}</span>
+      ${sk.tags.map(t => `<span class="${tagClass(t)}">${t}</span>`).join('')}
+    </div>
+    ${dataNote(id)}<div class="d-desc">${esc(sk.desc)}</div>
+    <div class="d-sec">基础配置<small>配置值 · 非实战伤害</small></div>
+    <div class="stat-row">${stats}</div>
+    <div class="d-sec">升级词条<small>5 分支 × 3 级 · 点击分支展开</small></div>
+    ${branches}
+    <div class="d-sec">进化方向<small>三选一</small></div>
+    ${evos}
+    <button class="d-add" ${inBuild ? 'disabled' : ''} onclick="addToBuild('${id}')">${inBuild ? '已在 Build 中' : '＋ 加入 Build'}</button>`);
+}
+
+/* ================= 装备图鉴 ================= */
+const EQUIPS = D.equips;
+const SLOT_IDS = Object.keys(D.slotNames).map(Number).sort((a,b)=>a-b);
+const eState = { slot: null, rar: null, q: '' };
+
+/* 图片缺失或加载失败时使用的部位图形。 */
+const SLOT_SVG = {
+  1:'<circle cx="12" cy="13" r="7"/><path d="M5 11 Q12 4 19 11"/>',                    // 冠饰
+  2:'<path d="M7 4 L12 6 L17 4 L19 8 L16 10 L16 20 L8 20 L8 10 L5 8 Z"/>',            // 护甲
+  3:'<path d="M8 4 L16 4 L17 13 L14 20 L10 20 L7 13 Z"/><path d="M8 9 L16 9"/>',      // 护手
+  4:'<path d="M7 4 L15 4 L16 14 L18 18 L6 18 L8 14 Z"/>',                              // 护足
+  5:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>',                // 宝物
+  6:'<path d="M6 18 L16 6"/><path d="M14 4 L20 10 L16 8 Z"/><path d="M5 15 L9 19"/>', // 武器
+  7:'<circle cx="12" cy="14" r="6"/><path d="M10 6 L14 6 L12 9 Z"/>',                  // 戒指
+  8:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="4.5"/>',                // 手镯
+  9:'<path d="M4 15 Q12 6 20 15"/><path d="M7 15 L7 19 M17 15 L17 19"/>',              // 代步
+};
+function slotIcon(slot, color){
+  return `<svg viewBox="0 0 24 24" stroke="${color}">${SLOT_SVG[slot] || '<circle cx="12" cy="12" r="8"/>'}</svg>`;
+}
+const RAR_COLOR = {1:'#8e8e8e',2:'#ece5d3',3:'#c9a05a',4:'#d4694c'};
+
+function buildEqFilters(){
+  const sc = document.getElementById('slotChips');
+  const mk = (label, val) => {
+    const b = document.createElement('button');
+    b.className = 'chip cin'; b.textContent = label;
+    if(val) b.dataset.slot = val;
+    b.onclick = () => { eState.slot = eState.slot === val ? null : val; refreshEqChips(); renderEqGrid(); };
+    sc.appendChild(b);
+  };
+  mk('全部', null);
+  SLOT_IDS.forEach(id => mk(D.slotNames[id], id));
+  const rc = document.getElementById('rarChips');
+  const mkR = (label, val) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = label;
+    if(val) b.dataset.rar = val;
+    b.onclick = () => { eState.rar = eState.rar === val ? null : val; refreshEqChips(); renderEqGrid(); };
+    rc.appendChild(b);
+  };
+  mkR('全部', null);
+  [1,2,3,4].forEach(r => mkR(D.rarityNames[r], r));
+  document.getElementById('eqSearch').addEventListener('input', e => { eState.q = e.target.value.trim(); renderEqGrid(); });
+}
+function refreshEqChips(){
+  document.querySelectorAll('#slotChips .chip').forEach(b => {
+    b.classList.toggle('on', b.dataset.slot ? +b.dataset.slot === eState.slot : !eState.slot);
+  });
+  document.querySelectorAll('#rarChips .chip').forEach(b => {
+    b.classList.toggle('on', b.dataset.rar ? +b.dataset.rar === eState.rar : !eState.rar);
+  });
+}
+function eqText(eq){
+  let t = eq.name + eq.id;
+    eq.fixed.forEach(fid => { const tr = TRAITS[fid]; if(tr && !isEmptySpecial(tr)) t += tr.name + BuildStats.specialText(tr) + tr.kw.join(''); });
+  eq.pool.forEach(p => { const tr = TRAITS[p.id]; if(tr) t += tr.name + tr.text + tr.kw.join(''); });
+  return t;
+}
+function eqMatches(eq){
+  if(eState.slot && eq.slot !== eState.slot) return false;
+  if(eState.rar && eq.rarity !== eState.rar) return false;
+  if(eState.q && !eqText(eq).toLowerCase().includes(eState.q.toLowerCase())) return false;
+  return true;
+}
+function fmtNum(v, rule){
+  let n = parseFloat(v);
+  if(rule === '1'){ n = n * 100; return (Number.isInteger(n) ? n : n.toFixed(1)) + '%'; }
+  return Number.isInteger(n) ? String(n) : String(parseFloat(n.toFixed(2)));
+}
+function fmtRange(rg, rule){
+  if(!rg || rg[0] === '' ) return null;
+  const [a, b] = rg;
+  return a === b ? fmtNum(a, rule) : fmtNum(a, rule) + ' ~ ' + fmtNum(b, rule);
+}
+function isEmptySpecial(tr){ return tr && tr.type === 3 && !BuildStats.specialText(tr); }
+/* 效果表（Effect_Effect.csv）中的固定伤害值，用于把 {"f":"GetEffectDamage",...} 渲染为可读数值 */
+const FX_DMG = {
+  Equip_SQL_Special_1: 70, Equip_QXLYJ_Special_1: 550, Equip_HSH_Special_2: 350,
+  Equip_HXZ_Special_1: 30, Equip_BH_Special_2: 200, Equip_BM_Special_1: 30
+};
+function escFx(t){
+  const parts = [];
+  let s = String(t).replace(/\{"f":"(?:GetEffectDamage|GetSkillDamage)"[^}]*?"Effect":"(\w+)"[^}]*?\}/g, (m, e) => {
+    parts.push(FX_DMG[e] != null ? `<b class="fx">${FX_DMG[e]}</b>` : '<b class="fx">【技能伤害】</b>');
+    return '\u0001' + (parts.length - 1) + '\u0001';
+  });
+  return esc(s).replace(/\u0001(\d+)\u0001/g, (m, i) => parts[+i]);
+}
+/* 装备固定词条行（卡片 / 选择器共用） */
+function eqTraitRows(eq, tier = null){
+  return eq.fixed.map(fid => {
+    const tr = TRAITS[fid];
+    if(!tr || isEmptySpecial(tr)) return '';
+    if(tr.type === 3) return `<div class="eq-tr special">${escFx(BuildStats.specialText(tr))}</div>`;
+    const tiers = tr.ranges.map((rg, j) => {
+      if(tier !== null && j !== tier-1) return '';
+      const v = tier === null ? fmtRange(rg, tr.rule) : BuildStats.formatRange(rg,tr.rule);
+      return v ? `<i>${'ⅠⅡⅢ'[j]}</i>${v}` : '';
+    }).filter(Boolean).join(' · ');
+    return `<div class="eq-tr"><span class="tn">${esc(tr.name)}</span><span class="tv">${tiers || '当前品阶无数值配置'}</span></div>`;
+  }).join('');
+}
+function traitHTML(tr, weight){
+  if(!tr || isEmptySpecial(tr)) return '';
+  if(tr.type === 3){
+    return `<div class="tr">
+      <div class="tr-h"><span class="tr-name">特殊词条</span>${tr.skill ? '<span class="tr-forge">附带功法</span>' : ''}${weight != null ? `<span class="tr-w">权重 ${weight}</span>` : ''}</div>
+      <div class="tr-text">${escFx(BuildStats.specialText(tr))}</div>
+      ${tr.kw.length ? `<div class="tr-kw">${tr.kw.map(k => `<span>${esc(k)}</span>`).join('')}</div>` : ''}
+    </div>`;
+  }
+  const tiers = ['Ⅰ','Ⅱ','Ⅲ'].map((t, i) => {
+    const v = fmtRange(tr.ranges[i], tr.rule);
+    return v ? `<span><span class="tt">${t}</span><b>${v}</b></span>` : '';
+  }).join('');
+  return `<div class="tr">
+    <div class="tr-h"><span class="tr-name">${esc(tr.name)}</span>
+      ${tr.tier ? `<span class="tr-tier ${tr.tier}">${tr.tier}</span>` : ''}
+      ${tr.forge ? '<span class="tr-forge">可锻造</span>' : ''}
+      ${weight != null ? `<span class="tr-w">权重 ${weight}</span>` : ''}
+    </div>
+    ${tiers ? `<div class="tr-ranges">${tiers}</div>` : ''}
+    ${tr.kw.length ? `<div class="tr-kw">${tr.kw.map(k => `<span>${esc(k)}</span>`).join('')}</div>` : ''}
+  </div>`;
+}
+function renderEqGrid(){
+  const list = EQUIPS.filter(eqMatches);
+  document.getElementById('eqCountTxt').textContent = `${list.length} / ${EQUIPS.length} 件`;
+  document.getElementById('eqCount').textContent = EQUIPS.length;
+  document.getElementById('eqGrid').innerHTML = list.map((eq, i) => {
+    const trs = eqTraitRows(eq);
+    return `<div class="eq-card" onclick="openEquip(${EQUIPS.indexOf(eq)})">
+      <div class="eq-head">
+        ${iconHTML(eq, 'equipment', slotIcon(eq.slot, RAR_COLOR[eq.rarity]))}
+        <div class="eq-body">
+          <div class="eq-name r${eq.rarity}">${esc(eq.name)}</div>
+          <div class="eq-meta"><span class="eq-rar r${eq.rarity}">${eq.rarityName}</span><span>${eq.slotName}</span><span>随机池 ${eq.pool.length}</span></div>
+        </div>
+      </div>
+      ${trs ? `<div class="eq-traits">${trs}</div>` : ''}
+    </div>`;
+  }).join('') || '<div style="padding:40px;color:var(--muted)">没有匹配的装备</div>';
+}
+function openEquip(idx){
+  const eq = EQUIPS[idx];
+  const fixed = eq.fixed.map(fid => traitHTML(TRAITS[fid])).join('');
+  const pool = eq.pool.map(p => traitHTML(TRAITS[p.id], p.w)).join('');
+  showDrawer(`
+    <div class="drawer-title">${iconHTML(eq, 'hero equipment', slotIcon(eq.slot, RAR_COLOR[eq.rarity]))}<div><div class="d-id">${eq.id}</div><div class="d-name eq-name r${eq.rarity}">${esc(eq.name)}</div></div></div>
+    <div class="d-meta">
+      <span class="eq-rar r${eq.rarity}">${eq.rarityName}</span>
+      <span class="tag">${eq.slotName}</span>
+    </div>
+    ${dataNote(eq.id)}<div class="d-sec">固定词条<small>${eq.fixed.filter(fid => !isEmptySpecial(TRAITS[fid])).length} 条</small></div>
+    ${fixed || '<p style="font-size:13px;color:var(--muted)">无固定词条</p>'}
+    <div class="d-sec">随机词条池<small>${eq.pool.length} 条 · 按权重排序 · Ⅰ/Ⅱ/Ⅲ 为装备品阶对应的数值范围</small></div>
+    ${pool}`);
+}
+
+/* ================= Build 工坊 ================= */
+const SLOT_COUNT = 6;
+const BRANCH_PICKS = 3;
+const LS_KEY = 'taiwu_builds_v4';
+let currentBuild = { name: '', slots: Array(SLOT_COUNT).fill(null), equips: {}, equipTiers: {}, ...GuideBuild.normalize({},D) };
+let pickingSlot = -1;
+let pickMode = 'skill';
+const branchView = new Set();  // 展开查看等级的分支，键为 `槽位_分支`
+
+function addToBuild(id){
+  const idx = currentBuild.slots.findIndex(s => s === null);
+  if(idx < 0){ toast('Build 已满（6 门）'); return; }
+  if(currentBuild.slots.some(s => s && s.skill === id)){ toast('该功法已在 Build 中'); return; }
+  currentBuild.slots[idx] = { skill: id, evo: null, picks: [], levels:{} };
+  closeDrawer();
+  refreshBuilder();
+  activatePage('builder');
+  toast(`已加入「${byId[id].name}」`);
+}
+
+function renderSlots(synergy=WikiTools.synergy(currentBuild,D)){
+  const box = document.getElementById('slots');
+  box.innerHTML = '';
+  currentBuild.slots.forEach((slot, i) => {
+    const div = document.createElement('div');
+    if(!slot){
+      div.className = 'slot empty';
+      div.innerHTML = '<div class="plus">＋</div><p>选择功法</p>';
+      div.onclick = () => openPicker(i);
+    } else {
+      const sk = byId[slot.skill];
+      const incoming=synergy.chosen.find(s=>s.id===sk.id)?.externalIncoming||[];
+      const sourceNames=[...new Set(incoming.map(id=>byId[synergy.effects.find(e=>e.id===id).sourceId].name))];
+      const receivedLine=incoming.length?`<button class="slot-received" onclick="showReceivedSynergy('${sk.id}')">收到 ${incoming.length} 项可能加成 <span>来自 ${esc(sourceNames.join('、'))}</span></button>`:'';
+      const evoBtns = sk.evos.map(e =>
+        `<button class="${slot.evo === e.id ? 'on' : ''}" onclick="setEvo(${i},'${e.id}')">${iconHTML(e, 'sm')}<b>${esc(e.name.replace(sk.name, '') || e.name)}</b><small>${esc(e.effect.length > 18 ? e.effect.slice(0, 18) + '…' : e.effect)}</small></button>`
+      ).join('');
+      const selEvo = sk.evos.find(e => e.id === slot.evo);
+      const picks = [1,2,3,4,5].map(bn => {
+        const on = slot.picks.includes(bn);
+        const dis = !on && slot.picks.length >= BRANCH_PICKS;
+        const exp = on || branchView.has(i + '_' + bn);
+        const lvs = sk.upgrades.filter(u => u.branch === bn).map(u =>
+          `<div><span class="ln">LV${u.level}</span>${esc(u.desc)}</div>`).join('');
+        return `<div>
+          <button class="pick-b ${on ? 'on' : ''} ${dis ? 'dis' : ''} ${exp ? 'exp' : ''}" onclick="togglePick(${i},${bn})">
+            <span class="ck">✓</span>${iconHTML(sk.upgrades.find(u => u.branch === bn), 'xs')}<span>分支${bn} · ${esc(branchName(sk, bn))}</span>
+            <span class="caret" onclick="event.stopPropagation();toggleBranchView(${i},${bn})">▶</span>
+          </button>
+          ${on ? `<label class="level-choice">规划等级 · ${esc(branchName(sk,bn))}<select aria-label="${esc(sk.name)}分支${bn}等级" onchange="setBranchLevel(${i},${bn},this.value)">${[0,1,2,3].map(l=>`<option value="${l}"${(slot.levels?.[bn]||0)===l?' selected':''}>${l?'Lv'+l:'仅预选'}</option>`).join('')}</select></label>` : ''}
+          <div class="b-lv ${exp ? 'on' : ''}">${lvs}</div>
+        </div>`;
+      }).join('');
+      div.className = 'slot';
+      div.innerHTML = `
+        <div class="sh"><span class="name-with-icon">${iconHTML(selEvo || sk)}<span class="sn">${esc(sk.name)}</span></span><button class="rm" onclick="removeSlot(${i})">×</button></div>
+        <div class="st">${WikiTools.effectiveTags(slot,sk).map(t => `<span class="${tagClass(t)}">${t}</span>`).join(' ')}</div>
+        <p class="sd">${esc(sk.desc)}</p>
+        ${receivedLine}
+        <div class="evo-sec ${slot.evo ? '' : 'none'}">
+          <div class="evo-h"><span>功法突破 · 三选一</span><span class="${slot.evo ? 'st-on' : 'st-off'}">${selEvo ? '已突破 · ' + esc(selEvo.name) : '未突破'}</span></div>
+          <div class="evo-pick">${evoBtns}</div>
+          ${selEvo ? `<div class="evo-desc">${esc(selEvo.effect)}</div>` : ''}
+        </div>
+        <div class="pick-h"><span>升级词条分支</span><span class="cnt">已选 ${slot.picks.length}/${BRANCH_PICKS}</span></div>
+        <div class="pick-list">${picks}</div>`;
+    }
+    box.appendChild(div);
+  });
+}
+function setEvo(i, eid){
+  const s = currentBuild.slots[i];
+  s.evo = s.evo === eid ? null : eid;
+  refreshBuilder();
+}
+function togglePick(i, bn){
+  const s = currentBuild.slots[i];
+  s.levels ||= {};
+  const r = s.picks.indexOf(bn);
+  if(r >= 0){s.picks.splice(r, 1);delete s.levels[bn];}
+  else {
+    if(s.picks.length >= BRANCH_PICKS){ toast(`每门功法最多选 ${BRANCH_PICKS} 条分支`); return; }
+    s.picks.push(bn);
+    s.levels[bn]=3;
+  }
+  refreshBuilder();
+}
+function setBranchLevel(i,bn,value){currentBuild.slots[i].levels[bn]=Number(value);refreshBuilder();}
+function removeSlot(i){
+  currentBuild.slots[i] = null;
+  refreshBuilder();
+}
+
+/* ---------- 选择器（功法 / 装备 双模式） ---------- */
+function openPicker(i){
+  closeCompare();
+  pickMode = 'skill'; pickingSlot = i;
+  document.getElementById('picker').classList.add('on');
+  document.getElementById('pickSearch').placeholder = '搜索功法名 / 类型 / 效果…';
+  document.getElementById('pickSearch').value = '';
+  renderPickList('');
+  document.getElementById('pickSearch').focus();
+}
+function openEqPicker(sid){
+  closeCompare();
+  document.getElementById('comparePreview').classList.add('on');
+  document.getElementById('comparePreview').textContent='选择「对比」可查看替换前后的固定属性和特殊效果变化。';
+  pickMode = 'equip'; pickingSlot = sid;
+  document.getElementById('picker').classList.add('on');
+  document.getElementById('pickSearch').placeholder = '搜索装备名 / 词条 / 效果关键词…';
+  document.getElementById('pickSearch').value = '';
+  renderPickList('');
+  document.getElementById('pickSearch').focus();
+}
+function closePicker(){ document.getElementById('picker').classList.remove('on');closeCompare(); pickingSlot = -1; }
+document.getElementById('pickSearch').addEventListener('input', e => {closeCompare();renderPickList(e.target.value.trim());});
+function renderPickList(q){
+  const box = document.getElementById('pickList');
+  if(pickMode === 'equip'){
+    const taken = new Set(Object.values(currentBuild.equips));
+    const list = EQUIPS.filter(e => e.slot === pickingSlot && !taken.has(e.id) &&
+      (!q || eqText(e).toLowerCase().includes(q.toLowerCase())))
+      .sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name, 'zh'));
+    box.innerHTML = `<div class="pick-g">${D.slotNames[pickingSlot]} · ${list.length} 件可选</div>` + (list.map(e => `
+      <div class="pick-i eq" onclick="pickItem('${e.id}')">
+        <div class="pi-h">${iconHTML(e, 'sm equipment', slotIcon(e.slot, RAR_COLOR[e.rarity]))}<span class="nm" style="color:${RAR_COLOR[e.rarity]}">${esc(e.name)}</span><span class="tg">${e.rarityName} · 随机池 ${e.pool.length}</span><button type="button" class="compare-btn" title="与当前装备对比" onclick="event.stopPropagation();previewEquip('${e.id}')"><span aria-hidden="true">⇄</span>对比</button></div>
+        <div class="pi-trs">${eqTraitRows(e) || '<div class="eq-tr" style="color:#6a6a64">无固定词条</div>'}</div>
+      </div>`).join('') || '<div style="padding:30px;text-align:center;color:var(--muted)">没有可选装备</div>');
+    return;
+  }
+  const inBuild = new Set(currentBuild.slots.filter(Boolean).map(s => s.skill));
+  let html = '';
+  CHARS.forEach(c => {
+    const list = SKILLS.filter(s => s.char === c && !inBuild.has(s.id) &&
+      (!q || skillText(s).toLowerCase().includes(q.toLowerCase())));
+    if(!list.length) return;
+    html += `<div class="pick-g">${c}</div>` + list.map(s => `
+      <div class="pick-i" onclick="pickItem('${s.id}')">
+        ${iconHTML(s, 'sm')}
+        <span class="nm">${esc(s.name)}</span>
+        <span class="tg">${s.tags.join(' / ')}</span>
+        <span class="ds">${esc(s.desc)}</span>
+      </div>`).join('');
+  });
+  box.innerHTML = html || '<div style="padding:30px;text-align:center;color:var(--muted)">没有可选功法</div>';
+}
+function pickItem(id){
+  if(pickingSlot < 0 && pickMode === 'skill') return;
+  if(pickMode === 'equip'){
+    currentBuild.equips[pickingSlot] = id;
+    currentBuild.equipTiers[pickingSlot] = compareCandidate?.id===id ? compareCandidate.tier : currentBuild.equipTiers[pickingSlot] || 1;
+  } else {
+    currentBuild.slots[pickingSlot] = { skill: id, evo: null, picks: [], levels:{} };
+  }
+  closePicker();
+  refreshBuilder();
+}
+
+/* ---------- 装备配置 ---------- */
+function renderEqSlots(){
+  document.getElementById('eqSlots').innerHTML = SLOT_IDS.map(sid => {
+    const eid = currentBuild.equips[sid];
+    if(!eid) return `<div class="eq-slot empty" onclick="openEqPicker(${sid})"><div>＋</div><div style="font-size:11.5px">${D.slotNames[sid]}</div></div>`;
+    const idx = EQUIPS.findIndex(e => e.id === eid);
+    if(idx < 0) return '';
+    const eq = EQUIPS[idx];
+    const tier = currentBuild.equipTiers[sid] || 1;
+    return `<div class="eq-slot filled" onclick="openEquip(${idx})">
+      <div class="esh">${iconHTML(eq, 'sm equipment', slotIcon(eq.slot, RAR_COLOR[eq.rarity]))}<span class="eslot">${D.slotNames[sid]}</span><span class="esn" style="color:${RAR_COLOR[eq.rarity]}">${esc(eq.name)}</span><button class="esx" onclick="event.stopPropagation();removeEq(${sid})">×</button></div>
+      <div class="equip-tier" onclick="event.stopPropagation()"><label>品阶 <select aria-label="${D.slotNames[sid]}品阶" onchange="setEquipTier(${sid},this.value)">${[1,2,3].map(t => `<option value="${t}"${t === tier ? ' selected' : ''}>${'ⅠⅡⅢ'[t-1]} 阶</option>`).join('')}</select></label><button onclick="openEqPicker(${sid})">更换</button></div>
+      <div class="equipped-traits">${eqTraitRows(eq,tier) || '<div class="eq-tr">无固定词条</div>'}</div>
+    </div>`;
+  }).join('');
+}
+function removeEq(sid){
+  delete currentBuild.equips[sid];
+  delete currentBuild.equipTiers[sid];
+  refreshBuilder();
+}
+function setEquipTier(sid, value){
+  const tier = Number(value);
+  if(![1,2,3].includes(tier) || !currentBuild.equips[sid]) return;
+  currentBuild.equipTiers[sid] = tier;
+  renderEqSlots(); renderEquipmentSummary();
+}
+function renderEquipmentSummary(){
+  const totals = BuildStats.sumFixedTraits(currentBuild,EQUIPS,TRAITS);
+  document.getElementById('equippedCount').textContent = `${totals.equipmentCount} / 9 件装备`;
+  const numeric = totals.numeric.map(t => `<details class="summary-stat"><summary><span>${esc(t.name)}</span><b>${BuildStats.formatRange([t.min,t.max],t.rule)}</b></summary><div class="summary-source">${t.sources.map(s => `<div>${esc(s.equipmentName)} · ${'ⅠⅡⅢ'[s.tier-1]}阶：${BuildStats.formatRange([s.min,s.max],t.rule)}</div>`).join('')}</div></details>`).join('');
+  const specials = totals.specials.length ? `<details class="summary-special" open><summary>特殊效果 · ${totals.specials.length} 条</summary>${totals.specials.map(s => `<div class="summary-effect">${escFx(s.text)}<div class="source">来源：${esc(s.equipmentName)} · ${'ⅠⅡⅢ'[s.tier-1]}阶</div></div>`).join('')}</details>` : '';
+  const unresolved = totals.unresolved.map(s => `<div class="summary-effect">${esc(s.equipmentName)} · ${esc(s.name || s.traitId)}：${esc(s.reason)}，未计入数值汇总。</div>`).join('');
+  document.getElementById('equipmentSummary').innerHTML = !totals.equipmentCount ? '<p class="summary-empty">选择装备后，在这里查看固定词条的合计与来源。</p>' : `<div class="summary-grid">${numeric}</div>${specials}${unresolved}${!numeric && !specials && !unresolved ? '<p class="summary-empty">当前装备没有固定词条。</p>' : ''}`;
+}
+
+/* ---------- 分析 ---------- */
+function renderAnalysis(){
+  const box = document.getElementById('analysis');
+  const chosen = currentBuild.slots.filter(Boolean);
+  if(!chosen.length){ box.innerHTML = '<p style="font-size:12.5px;color:var(--muted)">先在左侧装配功法。</p>'; return; }
+  const tagCount = {};
+  chosen.forEach(s => byId[s.skill].tags.forEach(t => tagCount[t] = (tagCount[t] || 0) + 1));
+  const main = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const max = main[0][1];
+  let html = main.map(([t, n]) => `
+    <div class="cov-row"><span class="cl">${t}</span><span class="cov-bar"><i style="width:${n / max * 100}%"></i></span><span class="cn">${n}</span></div>`).join('');
+  const hints = [];
+  hints.push('类型覆盖仅用于规划。跨功法加成及其条件见左侧「可能的功法联动」。');
+  const noEvo = chosen.filter(s => !s.evo).length;
+  if(noEvo > 0) hints.push(`还有 ${noEvo} 门功法未选择进化方向。`);
+  const noPick = chosen.filter(s => s.picks.length < BRANCH_PICKS).length;
+  if(noPick > 0) hints.push(`还有 ${noPick} 门功法的词条分支未选满 ${BRANCH_PICKS} 条。`);
+  if(chosen.length < 6) hints.push(`还可再装配 ${6 - chosen.length} 门功法。`);
+  const eqN = Object.keys(currentBuild.equips).length;
+  hints.push(eqN ? `已装配 ${eqN} / 9 件装备。` : '尚未装配装备，可在下方「装备配置」中选择。');
+  html += '<div style="margin-top:12px">' + hints.map(h => `<div class="hint${h.includes('未') || h.includes('还可') || h.includes('尚未') ? ' warn' : ''}">${h}</div>`).join('') + '</div>';
+  box.innerHTML = html;
+}
+
+function refreshBuilder(){ GuideUI.renderBuild();const synergy=WikiTools.synergy(currentBuild,D);renderSlots(synergy);renderEqSlots();renderEquipmentSummary();renderAnalysis();renderSynergy(synergy); }
+
+/* ---------- 存取 ---------- */
+function getSaved(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch(e){ return []; } }
+function setSaved(l){ localStorage.setItem(LS_KEY, JSON.stringify(l)); }
+function buildHasContent(b=currentBuild){return Boolean(b.slots?.some(Boolean)||Object.keys(b.equips||{}).length||GuideBuild.hasSelection(b,D)||GuideBuild.normalize(b,D).notes.trim());}
+function saveBuild(){
+  const name = document.getElementById('buildName').value.trim() || currentBuild.name || '未命名 Build';
+  if(!buildHasContent()){ toast('先填写备注或选择角色、灵侍、功法、装备'); return; }
+  const list = getSaved();
+  currentBuild.name=name;
+  list.unshift({ name, time: Date.now(), slots: currentBuild.slots, equips: currentBuild.equips, equipTiers: currentBuild.equipTiers, ...GuideBuild.normalize(currentBuild,D) });
+  setSaved(list.slice(0, 30));
+  document.getElementById('buildName').value = '';
+  renderSaved();
+  toast(`已保存「${name}」`);
+}
+function renderSaved(){
+  const list = getSaved();
+  document.getElementById('savedList').innerHTML = list.length ? list.map((b, i) => `
+    <div class="saved-i">
+      <span class="nm">${esc(b.name)}</span>
+      <button class="mini" onclick="loadSaved(${i})">载入</button>
+      <button class="mini" onclick="exportImage(${i})">图片</button>
+      <button class="mini del" onclick="delSaved(${i})">删</button>
+    </div>`).join('') : '<p style="font-size:12.5px;color:var(--muted)">暂无保存的方案</p>';
+}
+function normSlot(s){
+  return WikiTools.normalizeSlot(s,SKILLS);
+}
+function loadSaved(i){
+  const b = getSaved()[i];
+  currentBuild = { name: b.name, slots: [...b.slots.map(normSlot), ...Array(SLOT_COUNT).fill(null)].slice(0, SLOT_COUNT), ...BuildStats.normalizeEquipment(b.equips,b.equipTiers,EQUIPS), ...GuideBuild.normalize(b,D) };
+  document.getElementById('buildName').value=b.name;
+  refreshBuilder();
+  toast(`已载入「${b.name}」`);
+}
+function delSaved(i){ const l = getSaved(); l.splice(i, 1); setSaved(l); renderSaved(); }
+function exportBuild(){
+  if(!buildHasContent()){ toast('Build 为空'); return; }
+  const blob = new Blob([JSON.stringify({ schemaVersion:2, name: document.getElementById('buildName').value.trim() || currentBuild.name || '太吾Build', dataDate:D.metadata.snapshotDate, slots: currentBuild.slots, equips: currentBuild.equips, equipTiers: currentBuild.equipTiers, ...GuideBuild.normalize(currentBuild,D) }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (document.getElementById('buildName').value.trim() || currentBuild.name || '太吾Build') + '.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importBuild(ev){
+  const f = ev.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const d = JSON.parse(rd.result);
+      if(!Array.isArray(d.slots)) throw 0;
+      currentBuild = { name: d.name || '导入 Build', slots: [...d.slots.map(normSlot), ...Array(SLOT_COUNT).fill(null)].slice(0, SLOT_COUNT), ...BuildStats.normalizeEquipment(d.equips,d.equipTiers,EQUIPS), ...GuideBuild.normalize(d,D) };
+      document.getElementById('buildName').value=currentBuild.name;
+      refreshBuilder(); renderSaved();
+      toast('导入成功');
+    } catch(e){ toast('文件格式不正确'); }
+  };
+  rd.readAsText(f);
+  ev.target.value = '';
+}
+
+/* ================= 关键词典 ================= */
+const KW_GROUPS = [
+  { key: 'hai', title: '妨害状态（削弱敌人）', names: ['失神','破绽','封穴','重创'] },
+  { key: 'yi', title: '异常状态（持续伤害）', names: ['神火','中毒','外伤'] },
+  { key: 'zeng', title: '增益状态（强化友方）', names: ['纯阳','御体','精妙','脚力','迅疾','摧破','轻灵'] },
+  { key: 'misc', title: '机制与其他', names: null },
+];
+const reverseRows=WikiTools.reverseIndex(D);
+async function exportImage(index){
+ const b=typeof index==='number'?getSaved()[index]:{...currentBuild,name:document.getElementById('buildName').value.trim()||currentBuild.name||'未命名 Build'};
+ if(!b||!buildHasContent(b)){toast('先填写备注或选择角色、灵侍、功法、装备');return;}
+ try{toast('正在生成方案图片…');await BuildImage.download(b,D);toast('图片已生成');}catch(e){console.error(e);toast('图片生成失败，请减少方案内容后重试');}
+}
+document.getElementById('reverseSearch').addEventListener('input',()=>renderKeywords());
+document.getElementById('reverseStatus').addEventListener('change',renderReverse);
+document.getElementById('dataBanner').innerHTML=`<summary>数据快照 ${D.metadata.snapshotDate} · 配置描述 / 待验证 · 已实测机制 ${Object.values(D.metadata.verification).filter(s=>s.status==='tested').length} 条</summary><p>${esc(D.metadata.gameVersion)}。${esc(D.metadata.scope)}。</p><p><span class="status-badge">配置描述</span> 原始文本与配置值；<span class="status-badge tested">已实测机制</span> 需有版本、步骤和证据，目前无记录；<span class="status-badge pending">待验证</span> 描述推断或配置差异。网页功能测试与游戏机制实测分别记录。</p><p>来源 ${esc(D.metadata.source)} · SHA256 ${D.metadata.sourceSha256}</p>`;
+GuideUI.init();
+renderReverse();
+buildFilters();
+renderGrid();
+buildEqFilters();
+renderEqGrid();
+refreshBuilder();
+renderSaved();
+renderKeywords();
+activatePage(location.hash.slice(1) || 'codex');
+</script>
+</body>
+</html>

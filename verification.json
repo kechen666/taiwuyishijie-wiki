@@ -1,0 +1,65 @@
+{
+  "dataDate": "2026-10-16",
+  "databaseSha256": "f96b04f9a1b1058db4a8a5dbc804fd539bd2c225119024765401da0972897997",
+  "checks": [
+    "check-build.cjs",
+    "check-tools.cjs",
+    "check-icons.cjs",
+    "check-guide.cjs"
+  ],
+  "counts": {
+    "skills": 30,
+    "equipment": 145,
+    "heroes": 6,
+    "characterTraits": 90,
+    "companionFamilies": 7,
+    "companionStages": 43,
+    "specialSummons": 7,
+    "companionSkillSlots": 50,
+    "activeItems": 8,
+    "elixirs": 35,
+    "basicPickups": 3,
+    "originalIconFiles": 537
+  },
+  "browserChecks": [
+    "three new guide pages and drawers",
+    "trait search and per-realm replacement",
+    "realm gating and clearing higher choices",
+    "companion stage and details-to-build",
+    "JSON export/import and reload saved plan",
+    "legacy equipment-only import",
+    "profile-only PNG and six-skill/nine-gear full PNG",
+    "new reverse-lookup item details",
+    "360px document/identity/expanded choices/special cards without overflow",
+    "no captured console errors",
+    "reselecting the same hero preserves existing trait picks",
+    "keyword card, exact search and drawer all show 102 Shenhuo records with matching categories",
+    "notes preserved through realm changes, save/reload and exported JSON re-import",
+    "legacy saved build loads empty notes",
+    "Chinese (English) pickup names and English search",
+    "notes full-build PNG 1200x3182 without synergy section",
+    "360px document with notes and keyword badges without horizontal overflow"
+  ],
+  "gameMechanicsTested": false,
+  "characterSelectionRule": "At most one trait per realm for planning; actual exclusivity and stacking unverified.",
+  "activeItemIconMappings": "resource-name candidates, labeled in UI",
+  "allOriginalIconsMatchedSourceSha256": true,
+  "sourceGameFileCount": 2893,
+  "sharedNormalFamilyPortraitsShownAsDedicated": false,
+  "currentPngSections": [
+    "notes",
+    "character traits and accompanying spirit",
+    "technique setup",
+    "equipment setup"
+  ],
+  "notesLimit": 4000,
+  "sourceRecheck": {
+    "date": "2026-10-16",
+    "historicalBaselineDiffCount": 16,
+    "currentInstallDatabaseSha256": "49a4953dfed12b5c66c62e3e0e37c7ee75358a2d036d637b44ad8cf514a403e8",
+    "retainedSnapshotDatabaseSha256": "f96b04f9a1b1058db4a8a5dbc804fd539bd2c225119024765401da0972897997",
+    "snapshotMatchesCurrentInstall": false,
+    "gameFilesWrittenByThisTask": false,
+    "note": "16 files differ from the earlier extraction baseline; file timestamps cluster at 23:11 Asia/Shanghai. Possible game update; cause not independently verified. This UI change retains the previously collected snapshot."
+  }
+}

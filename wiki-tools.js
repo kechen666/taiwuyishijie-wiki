@@ -29,6 +29,10 @@ const WikiTools = (() => {
     for(const c of d.companions||[])add('companion','companion:'+c.id,c.name,c.stages.map(s=>s.passive).join(' '),[],{guideKind:'companion',entityId:c.id,icon:c.icon});
     for(const s of d.companionSkills||[])add('companionSkill','companionSkill:'+s.id,s.name,s.desc,s.keywordIds,{guideKind:'companionSkill',entityId:s.id,icon:s.icon});
     for(const i of d.items||[])add('item',i.id,i.name,i.desc,i.keywordIds,{guideKind:'item',entityId:i.id,icon:i.icon});
+    for(const a of d.wanqu?.abilities||[]){
+      const active=a.templates.some(id=>d.wanqu.characters.some(c=>c.id===id&&c.available));
+      add('wanquAbility','wanquAbility:'+a.id,a.name,a.description,[],{guideKind:'wanquAbility',entityId:a.id,sourceDate:d.wanqu.metadata.snapshotDate,sourceNote:active?'配置描述':'仅停用模板引用'});
+    }
     return rows;
   }
   function search(rows,q,keyword){
@@ -37,7 +41,7 @@ const WikiTools = (() => {
   }
   function keywordGroups(rows,keyword){
     const related=search(rows,'',keyword);
-    return [['all','全部',related],['skill','功法/升级',related.filter(r=>r.skillId)],['fixed','固定装备',related.filter(r=>r.kind==='fixed')],['trait','特性',related.filter(r=>r.kind==='trait')],['guide','角色/灵侍/道具',related.filter(r=>r.guideKind)]];
+    return [['all','全部',related],['skill','功法/升级',related.filter(r=>r.skillId)],['fixed','固定装备',related.filter(r=>r.kind==='fixed')],['trait','特性',related.filter(r=>r.kind==='trait')],['guide','角色/灵侍/道具/宛渠',related.filter(r=>r.guideKind)]];
   }
   function synergy(build,d){
     const chosen=(build.slots||[]).map(s=>normalizeSlot(s,d.skills)).filter(Boolean).map(slot=>{const sk=d.skills.find(s=>s.id===slot.skill);return {slot,sk,tags:effectiveTags(slot,sk)};});

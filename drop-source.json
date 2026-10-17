@@ -1,0 +1,534 @@
+{
+  "metadata": {
+    "snapshotDate": "2026-10-17",
+    "gameVersion": "未确认；以当前源SHA区分",
+    "database": "design.dat",
+    "databaseSha256": "128fa64524becd460c2e487e470a7a0e3b2f0e280b99f8cb55d067ec4caaad92",
+    "sqliteAlternative": "design.sqlite3为0字节空文件，未作为数据源",
+    "status": "配置描述与静态代码分析；未游戏实测",
+    "gameFilesWritten": false,
+    "scope": "8条指定装备规则；配置与静态代码推导，非游戏实测",
+    "nativeFunctions": [
+      {
+        "method": "GameTools.DropEquipment(四参)",
+        "rva": "0xFF1250",
+        "meaning": "件数与品质权重"
+      },
+      {
+        "method": "EnemyControllerAdvance.CheckDropGameItem",
+        "rva": "0xF66C60",
+        "meaning": "敌人掉落传入D、玩家最终R、死亡敌人最终E"
+      },
+      {
+        "method": "BattleManager.TaskEndDropRule",
+        "rva": "0xF081D0",
+        "callRva": "0xF084A8",
+        "meaning": "已追踪任务奖励路径显式传D/R/E=0"
+      },
+      {
+        "method": "ListenerResultHandler.RewardDropRule",
+        "rva": "0xCE7890",
+        "callRva": "0xCE7A9E",
+        "meaning": "通用互动奖励显式传D/R/E=0；H1L1规则与该路径的具体绑定仍待确认"
+      }
+    ],
+    "binarySha256": "97a1e0432e55248d5e8816e43f50fc8090f03480e415e51472a886dfd364b88b"
+  },
+  "rPercents": [
+    0,
+    100,
+    150,
+    250,
+    350,
+    450
+  ],
+  "defaults": {
+    "enemyPercent": 0,
+    "quantityPercent": 0
+  },
+  "rules": [
+    {
+      "id": "Equipment_Normal_1",
+      "sourceIndex": 0,
+      "drawCount": 1,
+      "baseDropRate": 0.0005,
+      "minimumCount": 0,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        9479.0,
+        500.0,
+        20.0,
+        1.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 0,
+          "id": "T0_Enemy_SR",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 2,
+          "id": "T0_Enemy_YTX",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 4,
+          "id": "T0_Enemy_SN",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 5,
+          "id": "T0_Enemy_WSEG",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 7,
+          "id": "T0_Enemy_LYS",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 9,
+          "id": "T0_Enemy_ZH",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 12,
+          "id": "Enemy_L2M1",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 14,
+          "id": "Enemy_L2M2",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 16,
+          "id": "Enemy_L2M3",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 17,
+          "id": "Enemy_L2M4",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 19,
+          "id": "Enemy_L2M5",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 21,
+          "id": "Enemy_L2M6",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 22,
+          "id": "Enemy_ZH_L2",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 26,
+          "id": "Dummy_Normal",
+          "field": "DropPackId"
+        }
+      ],
+      "alias": "normal",
+      "label": "普通怪",
+      "meaning": "普通敌人掉落规则。配置由多条普通敌人记录的DropPackId引用。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    },
+    {
+      "id": "Equipment_Elite_1",
+      "sourceIndex": 1,
+      "drawCount": 2,
+      "baseDropRate": 0.25,
+      "minimumCount": 0,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        840.0,
+        100.0,
+        50.0,
+        1.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 1,
+          "id": "T0_Enemy_Elite_SR",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 3,
+          "id": "TO_Enemy_Elite_YTX",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 6,
+          "id": "T0_Enemy_Elite_WSEG",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 8,
+          "id": "T0_Enemy_Elite_LYS",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 13,
+          "id": "Enemy_Elite_L2M1",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 15,
+          "id": "Enemy_Elite_L2M2",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 18,
+          "id": "Enemy_Elite_L2M4",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 20,
+          "id": "Enemy_Elite_L2M5",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 27,
+          "id": "Dummy_Elite",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 43,
+          "id": "Enemy_WanQuZhiYing",
+          "field": "DropPackId"
+        }
+      ],
+      "alias": "elite",
+      "label": "精英怪",
+      "meaning": "精英敌人掉落规则；部分特殊敌人也引用它，不能只凭怪物外观判断。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    },
+    {
+      "id": "Equipment_SmallBoss_1",
+      "sourceIndex": 2,
+      "drawCount": 3,
+      "baseDropRate": 0.5,
+      "minimumCount": 2,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        400.0,
+        340.0,
+        250.0,
+        10.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 10,
+          "id": "Enemy_Boss_CM",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 23,
+          "id": "Enemy_Boss_SSFX",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 28,
+          "id": "Dummy_SmallBoss",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 42,
+          "id": "Enemy_WoNiu",
+          "field": "DropPackId"
+        }
+      ],
+      "alias": "smallboss",
+      "label": "小BOSS",
+      "meaning": "小首领规则，含Enemy_Boss_CM、Enemy_Boss_SSFX等配置引用。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    },
+    {
+      "id": "Equipment_BigBoss_1",
+      "sourceIndex": 3,
+      "drawCount": 6,
+      "baseDropRate": 0.5,
+      "minimumCount": 3,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        250.0,
+        300.0,
+        350.0,
+        100.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 11,
+          "id": "Enemy_Boss_XF",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 24,
+          "id": "Enemy_Boss_YYH",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 29,
+          "id": "Dummy_BigBoss",
+          "field": "DropPackId"
+        }
+      ],
+      "alias": "bigboss",
+      "label": "大BOSS",
+      "meaning": "大首领规则；当前血枫、衣以侯的配置引用此规则。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    },
+    {
+      "id": "Equipment_BaoXiang_H1L1",
+      "sourceIndex": 4,
+      "drawCount": 2,
+      "baseDropRate": 0.3,
+      "minimumCount": 1,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        235.0,
+        610.0,
+        125.0,
+        20.0
+      ],
+      "references": [],
+      "alias": "BaoXiang_H1L1",
+      "label": "宝箱 H1L1",
+      "meaning": "宝箱命名的H1L1规则。尚未确认H1/L1在实际入口中的完整映射，也未找到本表的直接配置引用；不能泛指所有宝箱。",
+      "kind": "chest",
+      "meaningStatus": "名称解释 / 具体入口待确认"
+    },
+    {
+      "id": "Equipment_Event",
+      "sourceIndex": 5,
+      "drawCount": 3,
+      "baseDropRate": 0.33,
+      "minimumCount": 1,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        0.0,
+        875.0,
+        100.0,
+        25.0
+      ],
+      "references": [
+        {
+          "table": "Task_GameTask",
+          "index": 0,
+          "id": "LineCollisionGame",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 1,
+          "id": "CricketGame",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 2,
+          "id": "MonsterSacrificeGame",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 3,
+          "id": "ZoneOccupationGame",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 4,
+          "id": "MonsterSacrificeGame_Tutorial",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 7,
+          "id": "LineCollisionGame_L2",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 8,
+          "id": "CricketGame_L2",
+          "field": "DropRule"
+        },
+        {
+          "table": "Task_GameTask",
+          "index": 9,
+          "id": "MonsterSacrificeGame_L2",
+          "field": "DropRule"
+        }
+      ],
+      "alias": "Equipment_Event",
+      "label": "事件奖励",
+      "meaning": "鲤鱼跃龙门、捕获促织、诛邪聚气、封闭裂隙等任务的奖励规则，不是击杀敌人。已追踪TaskEndDropRule路径传D/R/E=0。",
+      "kind": "event",
+      "meaningStatus": "任务配置及传零调用已核对"
+    },
+    {
+      "id": "BaoXiangGuai",
+      "sourceIndex": 13,
+      "drawCount": 4,
+      "baseDropRate": 0.5,
+      "minimumCount": 2,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        250.0,
+        400.0,
+        300.0,
+        50.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 35,
+          "id": "TreasureMonster_L1",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 36,
+          "id": "TreasureMonster_L2",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 37,
+          "id": "TreasureMonster_L3",
+          "field": "DropPackId"
+        }
+      ],
+      "alias": "BaoXiangGuai",
+      "label": "宝箱怪 / 宝藏地精",
+      "meaning": "TreasureMonster_L1～L3引用的规则；与普通宝箱规则不同。宛渠赏金猎人文案将对应敌人称为宝藏地精。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    },
+    {
+      "id": "NiuDa",
+      "sourceIndex": 14,
+      "drawCount": 6,
+      "baseDropRate": 0.5,
+      "minimumCount": 3,
+      "qualityPoolIds": [
+        "Common_01",
+        "Rare_01",
+        "Epic_01",
+        "Legend_01"
+      ],
+      "qualityWeights": [
+        250.0,
+        400.0,
+        300.0,
+        50.0
+      ],
+      "references": [
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 38,
+          "id": "NiuDa_L1",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 39,
+          "id": "NiuDa_L2",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Character_EnemyCharacter",
+          "index": 40,
+          "id": "NiuDa_L3",
+          "field": "DropPackId"
+        },
+        {
+          "table": "Sailor_SailorCharacter",
+          "index": 60,
+          "id": "NiuDa",
+          "field": "name"
+        }
+      ],
+      "alias": "NiuDa",
+      "label": "牛大",
+      "meaning": "NiuDa_L1～L3敌人引用的规则；与宛渠出谷客的亦正亦邪能力相关。",
+      "kind": "enemy",
+      "meaningStatus": "配置引用已核对"
+    }
+  ]
+}

@@ -98,6 +98,7 @@ const GuideUI = (() => {
     else if(row.guideKind==='companion')openCompanion(row.entityId);
     else if(row.guideKind==='companionSkill')openCompanionSkill(row.entityId);
     else if(row.guideKind==='item')openItem(row.entityId);
+    else if(row.guideKind==='wanquAbility')WanquUI.openAbility(row.entityId);
   }
   function init(){
     new ResizeObserver(entries=>document.documentElement.style.setProperty('--head-height',entries[0].target.getBoundingClientRect().height+'px')).observe(document.querySelector('.site-head'));

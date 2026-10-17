@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>太吾异世劫 · 功法图鉴与 Build 工坊</title>
+<title>太吾异世劫 · 图鉴与 Build 工坊</title>
 <style>
 :root{
   --bg:#1c1c1c; --bg2:#232120; --paper:#ece5d3; --muted:#8e8e8e;
@@ -318,13 +318,15 @@ footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center
   <div class="head-in">
     <div class="brand">
       <h1>太吾异世劫 <em>图鉴</em></h1>
-      <span class="sub">功法、装备、角色特质、灵侍与局内道具 · 数据整理自本地游戏文件</span>
+      <span class="sub">功法、装备、角色特质、灵侍、宛渠之民与局内道具 · 数据整理自本地游戏文件</span>
     </div>
     <nav class="nav">
       <button data-page="codex" class="on">功法宝库<span class="n" id="navCount"></span></button>
       <button data-page="equip">装备图鉴<span class="n" id="eqCount"></span></button>
+      <button data-page="drops">掉落机制</button>
       <button data-page="characters">角色特质</button>
       <button data-page="companions">灵侍图鉴</button>
+      <button data-page="wanqu">宛渠之民</button>
       <button data-page="items">局内道具</button>
       <button data-page="builder">Build 工坊</button>
       <button data-page="keywords">关键词典</button>
@@ -334,6 +336,8 @@ footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center
 
 <link rel="stylesheet" href="wiki-tools.css">
 <link rel="stylesheet" href="guide.css">
+<link rel="stylesheet" href="wanqu.css">
+<link rel="stylesheet" href="drop.css">
 <main class="wrap">
   <details class="data-banner" id="dataBanner"></details>
   <section class="page on" id="page-codex">
@@ -368,6 +372,49 @@ footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center
     <div class="eq-grid" id="eqGrid"></div>
   </section>
 
+  <section class="page" id="page-drops">
+    <h2 class="sec-title">装备掉落的可能机制</h2>
+    <p class="sec-note">先判定掉几件，再按品质权重抽取。下方比较8条规则在不同R下的数学结果，区分单件装备的绝品概率与一次击杀/触发至少获得一件绝品的概率。</p>
+    <div class="drop-intro"><span class="status-badge pending">可能机制 · 非游戏实测</span><span class="guide-date" id="dropDate"></span></div>
+    <div class="drop-definitions">
+      <article class="drop-definition"><h3>R · 玩家侧的最终稀有加成</h3><code>RareEquip_DropRate</code><p>R是<strong>本次调用实际传入的玩家最终属性值</strong>，不是绝品概率。R=100%表示代入1，R=150%表示代入1.5。Buff是否生效、触发范围与叠加先由游戏计算，不能直接把所有文案数字相加。</p></article>
+      <article class="drop-definition"><h3>E · 死亡敌人的最终稀有加成</h3><code>RareEquipmentDropRateAddition</code><p>E取自<strong>这次死亡敌人身上的最终属性</strong>，与玩家R分开。默认E=0；例如以毒试心配置了随目标异常/妨害种类数变化的来源，但最终E仍取决于实际生效状态。E不是怪物品级，也不是所有敌人共有的常数。</p></article>
+    </div>
+    <div class="drop-formula"><code>K = (1 + R) × (1 + E)</code><code>q = w绝 × K ÷ [w凡 + w奇 + (w极 + w绝) × K]</code><p>只有<strong>极品和绝品</strong>的权重同时乘K，之后按总权重归一化。R/E不是直接加在绝品掉率上的百分点。例如大BOSS在E=0时，R从0升到100%，单件绝品率从10%变为约13.7931%。</p><p>“单件绝品概率”q以<strong>已经抽到一件装备</strong>为条件，不等于击杀一次敌人的掉率；绝品稀有度也与装备Ⅰ/Ⅱ/Ⅲ品阶分开。</p></div>
+
+    <h3 class="drop-section-title">R变化的概率曲线</h3>
+    <div class="drop-controls">
+      <label>重点查看的规则<select id="dropRule" aria-label="掉落重点规则"></select></label>
+      <label>敌人最终 E（%）<input id="dropEnemy" type="number" min="0" max="10000" step="any" value="0" required aria-label="敌人最终E百分比"></label>
+      <label class="drop-check"><input id="dropLog" type="checkbox">对数坐标（便于看普通怪）</label>
+      <button type="button" class="btn ghost" onclick="DropUI.onlySelected()">仅看所选</button>
+      <button type="button" class="btn ghost" onclick="DropUI.showAll()">全部显示</button>
+    </div>
+    <details class="drop-advanced"><summary>装备件数如何影响结果 · 数量参数与门槛模型</summary>
+      <p>数量层独立进行n次判定，成功次数为X，实际件数N=max(X,m)。m是最低总件数，并非额外赠送m件。数量加成D使用EquipmentDropRate_PercentAddition相关传入值，与R/E的品质加成分开；强运配置的0.08属于这一类来源。</p>
+      <div class="drop-controls"><label>数量加成 D（%）<input id="dropQuantity" type="number" min="0" max="10000" step="any" value="0" required aria-label="数量加成D百分比"></label><label>数量判定模型<select id="dropGate" aria-label="装备数量门槛模型"><option value="integer">静态整数门槛（默认，未实测）</option><option value="nominal">配置名义概率（对照）</option></select></label></div>
+      <p>名义p=p0×(1+D)。当前指令使用整数随机数0～9999，并以threshold ≥ 随机整数判定；threshold按单精度计算10000×p。因此默认p_gate=clamp((floor(threshold)+1)/10000,0,1)。普通怪p0=0.05%，该静态模型得到0.06%；不是将两者视为同一数值。可切换到配置名义值作对照。</p>
+      <p>至少一件绝品需对所有可能件数求和：Σ[k=0..n] BinomialPMF(k;n,p) × [1−(1−q)^max(k,m)]。不能直接把期望件数代入指数。该模型假设每次品质抽取独立且仍有可用部位；当前常规池各品质9个部位，所列规则最多6件。</p>
+    </details>
+    <p class="drop-error" id="dropError" role="status" aria-live="polite"></p>
+    <p class="drop-section-note" id="dropAssumptions"></p>
+    <div class="drop-caution">虚线 *：宝箱与事件曲线仅作“假设传入相同R/E”的公式对照，不能直接视为堆R后的实际收益。已追踪的任务奖励路径传入D/R/E=0，应参照三者为0的结果；宝箱H1L1的具体入口尚未确认。宝箱按开箱、事件按奖励触发计次，不叫“击杀掉率”。</div>
+    <div class="drop-legend" id="dropLegend" aria-label="显示或隐藏掉落规则"></div>
+    <div class="drop-chart-grid">
+      <section class="drop-chart-panel"><h3>单件装备的绝品概率 q</h3><p>已经获得一件装备时，它是绝品的概率。</p><div id="dropChartQ"></div></section>
+      <section class="drop-chart-panel"><h3>一次触发，至少一件绝品</h3><p>敌人为击杀一次；宝箱和事件为触发一次。计入数量判定与最低件数。</p><div id="dropChartOnce"></div></section>
+    </div>
+    <p class="drop-section-note">点击图例可隐藏曲线；“仅看所选”可放大低概率规则。鼠标停留或键盘聚焦数据点可查看数值，完整数据也见下表。折线只连接指定的6个R取值。宝箱怪与牛大的品质权重相同，单件曲线重合；数量规则不同，所以一次触发的概率不同。</p>
+    <h3 class="drop-section-title" id="dropSelectedTitle"></h3><p class="drop-section-note" id="dropSelectedNote"></p>
+    <div class="drop-table-scroll" tabindex="0" role="region" aria-label="所选规则概率数值"><table class="drop-table drop-values"><thead><tr><th scope="col">传入R</th><th scope="col">权重倍率K</th><th scope="col">单件绝品</th><th scope="col">一次触发至少1件绝品</th></tr></thead><tbody id="dropValues"></tbody></table></div>
+    <details class="drop-matrices"><summary>展开全部8条规则的概率数值</summary><p class="drop-section-note">两张表均采用当前E、D与数量判定模型。带 * 的宝箱/事件行仍是统一公式对照。</p><div id="dropMatrices"></div></details>
+
+    <h3 class="drop-section-title">这些规则分别对应什么</h3>
+    <p class="drop-section-note">n为判定次数，p0为每次的名义装备掉率，m为最低总件数。品质权重按凡 / 奇 / 极 / 绝列出，不一定合计1000；例如elite为991，宝箱H1L1为990。</p>
+    <div class="drop-table-scroll" tabindex="0" role="region" aria-label="掉落规则含义和基础参数"><table class="drop-table drop-rule-table"><thead><tr><th scope="col">规则</th><th scope="col">对应内容及适用范围</th><th scope="col">n</th><th scope="col">p0</th><th scope="col">m</th><th scope="col">凡 / 奇 / 极 / 绝权重</th></tr></thead><tbody id="dropRuleRows"></tbody></table></div>
+    <details class="guide-source drop-source"><summary>数据来源、静态证据与未确认项</summary><div id="dropSource"></div></details>
+  </section>
+
   <section class="page" id="page-characters">
     <h2 class="sec-title">角色特质</h2>
     <p class="sec-note">6 位角色的基础特质与境界1～5条目，共90个特质。点击角色查看各境界效果，也可直接加入Build。</p>
@@ -386,6 +433,23 @@ footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center
     <button class="btn ghost guide-tool-link" onclick="GuideUI.showTreasureEquipment()">查看宝物栏装备</button>
     <div class="filters"><div class="f-row"><span id="itemKinds"></span></div><div class="f-row"><input class="search" id="itemSearch" aria-label="搜索局内道具" placeholder="搜索道具名、丹药或效果…"><span class="f-count" id="itemCount"></span></div></div>
     <div class="guide-grid" id="itemGrid"></div>
+  </section>
+
+  <section class="page" id="page-wanqu">
+    <h2 class="sec-title">宛渠之民</h2>
+    <p class="sec-note">按人物模板查看可能姓名、性格、门派、工作、知识与能力池。54条门派模板、6条特殊模板（其中2条停用），共330个非空名称条目与40条能力。</p>
+    <div class="wanqu-intro"><span class="status-badge">独立资料快照</span><span class="guide-date" id="wanquDate"></span></div>
+    <details class="wanqu-info"><summary>工作、知识与招募资料说明 · 展开查看</summary><div id="wanquKnowledge"></div><p>默认招募总池基础权重为凡人600、奇人300、英豪100；唯一人物排重及特殊强制分支会改变最终分布。原池中百花谷条目存在重复、错级，按原配置保留，不静默修正。部分性格编号与显示文本不同，筛选按编号进行，详情同时列出。</p><p>启用标记不等于正常随机可获得。姓名与能力不是固定绑定。</p></details>
+    <div class="filters">
+      <div class="f-row"><span id="wanquKinds"></span></div>
+      <div class="f-row wanqu-character-filters" id="wanquCharacterFilters">
+        <label>门派 <select id="wanquSect" aria-label="宛渠门派"></select></label>
+        <label>等级 <select id="wanquRarity" aria-label="宛渠等级"></select></label>
+        <label>性格（编号） <select id="wanquPersonality" aria-label="宛渠性格编号"></select></label>
+      </div>
+      <div class="f-row"><input class="search" id="wanquSearch" aria-label="搜索宛渠之民" placeholder="搜索姓名、身份、能力名称或效果…"><button type="button" class="btn ghost" onclick="WanquUI.reset()">重置筛选</button><span class="f-count" id="wanquCount" role="status" aria-live="polite"></span></div>
+    </div>
+    <div class="guide-grid" id="wanquGrid"></div>
   </section>
 
   <section class="page" id="page-builder">
@@ -483,12 +547,17 @@ footer{border-top:1px solid var(--line);padding:26px 24px 40px;text-align:center
 
 <script src="data.js"></script>
 <script src="guide-data.js"></script>
+<script src="wanqu-data.js"></script>
+<script src="drop-data.js"></script>
+<script src="drop-model.js"></script>
 <script src="build-stats.js"></script>
 <script src="wiki-tools.js"></script>
 <script src="guide-build.js"></script>
 <script src="build-image.js"></script>
 <script src="wiki-ui.js"></script>
 <script src="guide-ui.js"></script>
+<script src="wanqu-ui.js"></script>
+<script src="drop-ui.js"></script>
 <script>
 /* ================= 数据预处理 ================= */
 const D = TAIWU_DATA;
@@ -523,13 +592,14 @@ function toast(msg){
 }
 
 /* ================= 页面切换 ================= */
-const PAGES = ['codex','equip','characters','companions','items','builder','keywords'];
+const PAGES = ['codex','equip','drops','characters','companions','wanqu','items','builder','keywords'];
 function activatePage(name){
   if(!PAGES.includes(name)) name = 'codex';
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + name));
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.page === name));
   if(location.protocol !== 'about:' && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
   window.scrollTo({top:0});
+  if(name==='drops')DropUI.render();
 }
 document.querySelectorAll('.nav button').forEach(b => b.onclick = () => activatePage(b.dataset.page));
 window.addEventListener('hashchange', () => activatePage(location.hash.slice(1)));
@@ -1118,6 +1188,9 @@ document.getElementById('reverseSearch').addEventListener('input',()=>renderKeyw
 document.getElementById('reverseStatus').addEventListener('change',renderReverse);
 document.getElementById('dataBanner').innerHTML=`<summary>数据快照 ${D.metadata.snapshotDate} · 配置描述 / 待验证 · 已实测机制 ${Object.values(D.metadata.verification).filter(s=>s.status==='tested').length} 条</summary><p>${esc(D.metadata.gameVersion)}。${esc(D.metadata.scope)}。</p><p><span class="status-badge">配置描述</span> 原始文本与配置值；<span class="status-badge tested">已实测机制</span> 需有版本、步骤和证据，目前无记录；<span class="status-badge pending">待验证</span> 描述推断或配置差异。网页功能测试与游戏机制实测分别记录。</p><p>来源 ${esc(D.metadata.source)} · SHA256 ${D.metadata.sourceSha256}</p>`;
 GuideUI.init();
+WanquUI.init();
+DropUI.init();
+document.getElementById('dataBanner').insertAdjacentHTML('beforeend',`<p>宛渠之民与掉落机制分别使用 ${esc(D.wanqu.metadata.snapshotDate)}、${esc(D.drop.metadata.snapshotDate)} 的独立资料快照，原有图鉴仍为 ${esc(D.metadata.snapshotDate)}；来源SHA与验证状态见各页，未将不同数据混为同一快照。</p>`);
 renderReverse();
 buildFilters();
 renderGrid();

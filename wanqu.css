@@ -1,0 +1,40 @@
+.wanqu-intro{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 18px}
+.wanqu-intro .guide-date{margin:0}
+.wanqu-info{margin:0 0 18px;padding:12px 16px;border:1px solid var(--line);border-radius:8px;background:var(--bg2)}
+.wanqu-info summary{color:var(--gold);cursor:pointer;font-size:13px}
+.wanqu-info p{color:var(--muted);font-size:12.5px;line-height:1.9;margin-top:8px}
+.wanqu-character-filters{gap:12px;flex-wrap:wrap}
+.wanqu-character-filters[hidden]{display:none}
+.wanqu-character-filters label{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.wanqu-character-filters select{max-width:100%;background:var(--bg);color:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font:13px var(--sans)}
+.wanqu-card{gap:12px}
+.wanqu-card .guide-card-foot{padding-top:6px}
+.wanqu-card .guide-card-head strong{font-size:18px}
+.wanqu-card .guide-card-head small{overflow-wrap:anywhere}
+.wanqu-seal{display:flex;justify-content:center;align-items:center;flex:0 0 42px;height:46px;border:1px solid #665239;border-radius:8px;color:var(--gold);font:24px var(--serif);background:#c9a05a0b}
+.wanqu-tags{display:flex;flex-wrap:wrap;gap:6px}
+.wanqu-warning{color:#d3ac78;border-color:#765839}
+.wanqu-disabled{border-style:dashed}
+.wanqu-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:4px 0}
+.wanqu-stats>span{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 12px;color:var(--muted);font-size:12px}
+.wanqu-stats b{color:var(--gold);font-size:21px;font-weight:500;font-variant-numeric:tabular-nums}
+.wanqu-names{display:flex;flex-wrap:wrap;gap:6px;margin:3px 0}
+.wanqu-names>span{background:#8e8e8e0b;border:1px solid var(--line);border-radius:5px;padding:3px 8px;color:var(--paper);font-size:12px;overflow-wrap:anywhere}
+.wanqu-pool-preview{color:var(--muted);font-size:12px}
+.wanqu-pool,.wanqu-related{margin:15px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.wanqu-pool>summary,.wanqu-related>summary{padding:12px;color:var(--gold);cursor:pointer;font-size:14px;background:var(--bg2)}
+.wanqu-pool>summary>span{float:right;color:var(--muted);font-size:12px}
+.wanqu-ability-link{width:100%;display:flex;gap:12px;justify-content:space-between;background:transparent;color:var(--paper);text-align:left;border:0;border-top:1px solid var(--line);padding:13px;font:13px var(--sans)}
+.wanqu-ability-link>span:first-child{min-width:0}
+.wanqu-ability-link small{display:block;color:var(--muted);font-size:10px;overflow-wrap:anywhere;margin-top:5px}
+.wanqu-effect{display:block;line-height:1.85;margin-top:9px;font-size:12px}
+.wanqu-weight{color:var(--gold);text-align:right;flex:0 0 82px;white-space:nowrap}
+.wanqu-related-list{display:grid;gap:0}
+.wanqu-related-list button{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:transparent;padding:12px;color:var(--paper);font:12px var(--sans)}
+.wanqu-related-list button span,.wanqu-related-list button small{display:block;color:var(--muted);font-size:11px;line-height:1.8;margin-top:4px;overflow-wrap:anywhere}
+.wanqu-ability-link:hover,.wanqu-related-list button:hover{background:#c9a05a0b}
+.wanqu-ability-link:focus-visible,.wanqu-related-list button:focus-visible{outline:2px solid var(--gold);outline-offset:-3px}
+.wanqu-fields{font-size:12px;margin-top:12px}
+.wanqu-fields dt{color:var(--gold);overflow-wrap:anywhere}
+.wanqu-fields dd{margin:4px 0 12px;color:var(--muted);overflow-wrap:anywhere}
+@media(max-width:600px){.wanqu-character-filters{gap:10px}.wanqu-character-filters label{flex:1 1 140px}.wanqu-character-filters select{flex:1;min-width:0}.wanqu-pool>summary>span{float:none;display:block;margin-top:5px}.wanqu-card .guide-card-head strong{font-size:17px}}

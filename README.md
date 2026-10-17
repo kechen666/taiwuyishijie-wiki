@@ -1,4 +1,4 @@
-# 太吾异世劫图鉴与 Build 工坊
+# 太吾异世劫 Wiki 图鉴｜功法、装备、灵侍与 Build 工坊
 
 链接：https://kechen666.github.io/taiwuyishijie-wiki 
 
